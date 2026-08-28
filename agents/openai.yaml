@@ -1,0 +1,6 @@
+interface:
+  display_name: "Multi Agent Project Collaboration"
+  short_description: "Run a human-led, auditable multi-agent project workflow"
+  default_prompt: "Use $multi-agent-project-collaboration-mechanism to initialize a human-led multi-agent workflow for this project."
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+"""Read-only structural validator for a governed multi-agent project."""
+from __future__ import annotations
+
+import argparse
+import re
+import sys
+from pathlib import Path
+
+
+REQUIRED_DIRS = ("root", "rules", "ai_workspace", "work_logs", "draft", "plan", "project_demo", "project_final")
+TASK_CODE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*_\d{2}-\d{2}-\d{3}-\d{4}$")
+LOG_NAME = re.compile(r"^(level[12]_(?:results_mid|results|plan|summary|warning|error))_(.+)\.md$")
+REQUIRED_LOG_FIELDS = ("record_type:", "task_code:", "task_name:", "responsible_role:", "event_date:", "status:")
+REQUIRED_TASK_FIELDS = ("task_code:", "task_name:", "dispatch_status:", "responsible_employee:", "allowed_reads:", "allowed_writes:")
+
+
+def text_has_all(path: Path, fields: tuple[str, ...]) -> list[str]:
+    text = path.read_text(encoding="utf-8", errors="replace")
+    return [field for field in fields if field not in text]
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("project_root", type=Path)
+    args = parser.parse_args()
+    root = args.project_root.resolve()
+    errors: list[str] = []
+    warnings: list[str] = []
+    if not (root / "AGENTS.md").is_file():
+        errors.append("missing AGENTS.md")
+    for directory in REQUIRED_DIRS:
+        if not (root / directory).is_dir():
+            errors.append(f"missing directory: {directory}/")
+    for filename in ("00-core-governance.md", "01-role-and-filesystem.md", "02-work-log-governance.md"):
+        if not (root / "rules" / filename).is_file():
+            errors.append(f"missing rule: rules/{filename}")
+
+    logs = root / "work_logs"
+    if logs.is_dir():
+        for path in sorted(logs.glob("*.md")):
+            match = LOG_NAME.match(path.name)
+            if not match:
+                warnings.append(f"unrecognized log filename: work_logs/{path.name}")
+                continue
+            kind, code = match.groups()
+            if kind.startswith("level2") and not TASK_CODE.fullmatch(code):
+                errors.append(f"invalid level2 task code in {path.name}")
+            missing = text_has_all(path, REQUIRED_LOG_FIELDS)
+            if missing:
+                errors.append(f"missing fields in {path.name}: {', '.join(missing)}")
+            if kind == "level2_results" and "assistant_audit_status:" not in path.read_text(encoding="utf-8", errors="replace"):
+                errors.append(f"final result lacks assistant_audit_status: {path.name}")
+
+    root_templates = root / "root" / "templates"
+    if root_templates.is_dir():
+        for path in sorted(root_templates.rglob("*TASK*.md")):
+            missing = text_has_all(path, REQUIRED_TASK_FIELDS)
+            if missing:
+                warnings.append(f"template missing task fields in {path.relative_to(root)}: {', '.join(missing)}")
+
+    workspaces = root / "ai_workspace"
+    if workspaces.is_dir():
+        for path in sorted(workspaces.rglob("TASK_PACKAGE.md")):
+            missing = text_has_all(path, REQUIRED_TASK_FIELDS)
+            if missing:
+                errors.append(f"task package missing fields in {path.relative_to(root)}: {', '.join(missing)}")
+            text = path.read_text(encoding="utf-8", errors="replace")
+            code_line = next((line for line in text.splitlines() if "task_code:" in line), "")
+            candidate = code_line.split("task_code:", 1)[-1].strip().strip("`")
+            if candidate and "<" not in candidate and not TASK_CODE.fullmatch(candidate):
+                errors.append(f"invalid task code in {path.relative_to(root)}")
+
+    for message in warnings:
+        print(f"WARNING: {message}")
+    for message in errors:
+        print(f"ERROR: {message}")
+    print(f"RESULT: {'PASS' if not errors else 'FAIL'} ({len(errors)} errors, {len(warnings)} warnings)")
+    return 0 if not errors else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

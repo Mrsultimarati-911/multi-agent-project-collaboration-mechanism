@@ -1,0 +1,74 @@
+#!/usr/bin/env python3
+"""Create missing project-governance scaffolding without overwriting files."""
+from __future__ import annotations
+
+import argparse
+import shutil
+import sys
+from pathlib import Path
+
+
+SKILL_ROOT = Path(__file__).resolve().parents[1]
+TEMPLATES = SKILL_ROOT / "assets" / "templates"
+
+
+def copy_missing(source: Path, destination: Path, created: list[Path], skipped: list[Path]) -> None:
+    if source.is_dir():
+        destination.mkdir(parents=True, exist_ok=True)
+        for child in source.iterdir():
+            copy_missing(child, destination / child.name, created, skipped)
+        return
+    if destination.exists():
+        skipped.append(destination)
+        return
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(source, destination)
+    created.append(destination)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("project_root", type=Path, help="existing project root")
+    parser.add_argument("--prefix", required=True, help="project task-code prefix, e.g. P or QSYS")
+    args = parser.parse_args()
+    root = args.project_root.resolve()
+    if not root.exists() or not root.is_dir():
+        parser.error("project_root must be an existing directory")
+    if not args.prefix.replace("_", "").isalnum():
+        parser.error("--prefix may contain only letters, digits, and underscores")
+
+    created: list[Path] = []
+    skipped: list[Path] = []
+    for name in ("ai_workspace", "work_logs", "draft", "plan", "project_demo", "project_final"):
+        target = root / name
+        if not target.exists():
+            target.mkdir(parents=True)
+            created.append(target)
+    copy_missing(TEMPLATES / "AGENTS.md", root / "AGENTS.md", created, skipped)
+    copy_missing(TEMPLATES / "rules", root / "rules", created, skipped)
+    copy_missing(TEMPLATES / "root", root / "root", created, skipped)
+    copy_missing(
+        SKILL_ROOT / "scripts" / "validate_project_governance.py",
+        root / "root" / "validate_project_governance.py",
+        created,
+        skipped,
+    )
+
+    core_rule = root / "rules" / "00-core-governance.md"
+    if core_rule in created and "<SET_BY_OWNER>" in core_rule.read_text(encoding="utf-8"):
+        core_rule.write_text(
+            core_rule.read_text(encoding="utf-8").replace("<SET_BY_OWNER>", args.prefix),
+            encoding="utf-8",
+        )
+    print(f"project_root={root}")
+    print(f"created_or_initialized={len(created)}")
+    for path in created:
+        print(f"CREATE {path.relative_to(root)}")
+    print(f"preserved_existing={len(skipped)}")
+    for path in skipped:
+        print(f"PRESERVE {path.relative_to(root)}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
