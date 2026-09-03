@@ -5,12 +5,12 @@ An explicit-only Codex Skill for human-led, auditable multi-agent projects.
 It separates decision-making, planning, execution, governance, and durable records into five roles:
 
 - human project owner: approvals, decisions, exceptions, and final acceptance;
-- monitor: initializes and maintains owner-confirmed project rules;
+- monitor: the default first project conversation; checks the layout, obtains authorization before creating missing paths, and maintains owner-confirmed rules;
 - assistant: plans, dispatches approved work, and audits deliveries;
-- employee: performs one bounded task in an isolated workspace;
+- employee: performs one bounded task in an isolated workspace and requests assistant audit when complete;
 - record: validates and writes auditable work logs only.
 
-The Skill provides a standard project layout, `AGENTS.md` and rule templates, two-level work-log conventions, bounded task-package templates, and optional initialization and read-only validation scripts.
+The Skill provides a standard project layout (including `raw_data/`), `AGENTS.md` and rule templates, two-level work-log conventions, bounded task-package templates, and optional initialization and read-only validation scripts. The default employee configuration is GPT-5.6 Luna with high reasoning unless the owner specifies a different model level. Defaults may be amended only by the owner through `monitor`.
 
 ## Use
 

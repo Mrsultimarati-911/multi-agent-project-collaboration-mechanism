@@ -3,6 +3,7 @@
 - status: owner-confirmed baseline required before substantive work
 - project-code-prefix: `<SET_BY_OWNER>`
 - project-owner: human
+- default-rule-amendment: owner instruction -> monitor records replacement
 
 ## Owner-confirmed project-specific rules
 

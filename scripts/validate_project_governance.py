@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 
-REQUIRED_DIRS = ("root", "rules", "ai_workspace", "work_logs", "draft", "plan", "project_demo", "project_final")
+REQUIRED_DIRS = ("root", "rules", "ai_workspace", "work_logs", "draft", "plan", "project_demo", "project_final", "raw_data")
 TASK_CODE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*_\d{2}-\d{2}-\d{3}-\d{4}$")
 LOG_NAME = re.compile(r"^(level[12]_(?:results_mid|results|plan|summary|warning|error))_(.+)\.md$")
 REQUIRED_LOG_FIELDS = ("record_type:", "task_code:", "task_name:", "responsible_role:", "event_date:", "status:")

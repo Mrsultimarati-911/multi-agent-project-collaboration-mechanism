@@ -12,6 +12,7 @@ draft/                        # non-final analysis and proposals
 plan/                         # owner-confirmed or pending project plans
 project_demo/                 # authorized integration/testing staging
 project_final/                # owner-authorized final deliverables
+raw_data/                     # source inputs; never silently overwrite
 ```
 
 ## `root/`
@@ -25,5 +26,6 @@ project_final/                # owner-authorized final deliverables
 - `employee`: may write only its own `ai_workspace/<task-name>/`.
 - `assistant`: default read-only; writes formal project material only with explicit owner authorization.
 - `project_demo/` and `project_final/`: promotion targets only after owner authorization.
+- `raw_data/`: source inputs. No agent silently overwrites it; project-specific rules define any authorized write path.
 
 The project may make this stricter in `rules/`. Paths in task packages must be relative to the project root wherever possible.

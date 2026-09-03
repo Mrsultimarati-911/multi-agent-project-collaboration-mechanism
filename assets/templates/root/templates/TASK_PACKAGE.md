@@ -4,6 +4,8 @@
 - task_name:
 - dispatch_status: owner-approved
 - responsible_employee:
+- employee_model: `owner-specified, or gpt-5.6-luna`
+- employee_reasoning: `owner-specified, or high`
 - expected_duration:
 
 ## Objective
@@ -22,5 +24,7 @@
 ## Acceptance criteria and verification
 
 ## Delivery location and required report
+
+On completion, submit the delivery evidence to the creating assistant and explicitly request assistant audit. Completion is not acceptance or authorization to promote files.
 
 ## Escalation conditions

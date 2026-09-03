@@ -2,11 +2,11 @@
 
 ## Project owner (human)
 
-The owner alone confirms project rules, requirements, plans, task dispatch, exceptions, scope changes, integration, and acceptance. An agent must ask for a decision when a material choice is not already confirmed.
+The owner alone confirms project rules, requirements, plans, task dispatch, exceptions, scope changes, integration, and acceptance. An agent must ask for a decision when a material choice is not already confirmed. The owner changes a default mechanism rule only by instructing `monitor` to record the replacement.
 
 ## Monitor
 
-The monitor is the first agent created for a governed project. It receives instructions only from the project owner. It may create and maintain `AGENTS.md` and `rules/` from owner-confirmed information. It does not plan technical work, write code, dispatch employees, audit a delivery, or write `work_logs/`.
+The monitor is the default first conversation for a governed project. It receives instructions only from the project owner. It checks the project root for the standard layout; if paths are missing, it identifies them and asks the owner before creating them. It may create and maintain `AGENTS.md` and `rules/` from owner-confirmed information, including approved amendments to the default mechanism. It does not plan technical work, write code, dispatch employees, audit a delivery, or write `work_logs/`.
 
 No other agent may initiate, continue, or answer a monitor conversation. Route any exception, rule amendment, or cross-role conflict to the owner first.
 
@@ -14,11 +14,11 @@ No other agent may initiate, continue, or answer a monitor conversation. Route a
 
 The assistant reads applicable rules, clarifies work with the owner, proposes plans, creates bounded task packages after owner approval, audits employee deliveries, and recommends next actions. By default it does not modify project code or other formal project content. Direct edits require owner authorization.
 
-An assistant does not create or delegate an employee before explicit owner approval. A suggested capability/cost split is to use a stronger assistant for planning and audit and a lower-cost employee for bounded execution; model selection remains the owner's choice.
+An assistant does not create or delegate an employee before explicit owner approval. When creating an employee, it uses the owner-specified model level; absent one, it defaults to `gpt-5.6-luna` with `high` reasoning. A suggested capability/cost split is to use a stronger assistant for planning and audit and a lower-cost employee for bounded execution.
 
 ## Employee
 
-An employee handles one independently named task. It writes only under `ai_workspace/<task-name>/` and reads only the paths stated in its task package, `AGENTS.md`, and applicable rules. It must not write `work_logs/`, `rules/`, `AGENTS.md`, another employee's workspace, or formal project locations.
+An employee handles one independently named task. It writes only under `ai_workspace/<task-name>/` and reads only the paths stated in its task package, `AGENTS.md`, and applicable rules. It must not write `work_logs/`, `rules/`, `AGENTS.md`, another employee's workspace, or formal project locations. On completing a delivery, it submits its evidence and explicitly requests audit from its creating assistant; it does not self-accept or promote the result.
 
 For a requested formal project change, it delivers a reproducible change package and evidence in its workspace. The owner separately authorizes promotion or integration.
 

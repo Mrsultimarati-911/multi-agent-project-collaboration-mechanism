@@ -39,7 +39,7 @@ def main() -> int:
 
     created: list[Path] = []
     skipped: list[Path] = []
-    for name in ("ai_workspace", "work_logs", "draft", "plan", "project_demo", "project_final"):
+    for name in ("ai_workspace", "work_logs", "draft", "plan", "project_demo", "project_final", "raw_data"):
         target = root / name
         if not target.exists():
             target.mkdir(parents=True)

@@ -27,6 +27,7 @@ Use `assets/templates/root/templates/TASK_PACKAGE.md` as the source template. A 
 7. acceptance criteria and verification commands;
 8. required delivery path and output/report format;
 9. escalation conditions and expected-duration handling.
+10. the requirement to submit evidence and request assistant audit on completion.
 
 An employee asks for clarification or escalates if the task conflicts with rules, has missing inputs, needs a new authority, or cannot meet the declared boundary.
 
@@ -34,6 +35,6 @@ An employee asks for clarification or escalates if the task conflicts with rules
 
 The assistant verifies artifacts, validation outputs, scope boundaries, and stated limitations. It then chooses one of: accept as scoped, request correction, report an exception, or recommend owner-authorized promotion.
 
-For long work, the recommended default is: estimate work expected to exceed ten minutes, check status at most once per ten minutes, and have each assistant actively manage no more than five employees. The project rules may override these recommendations.
+After dispatch, the assistant remains silent until an employee submits a completion/audit request, an escalation-grade blocker occurs, or the owner intervenes. For long work, the default is: estimate work expected to exceed ten minutes, check status at most once per ten minutes, and have each assistant actively manage no more than five employees. The owner may amend these defaults through monitor.
 
 Employee delivery never by itself authorizes integration, changes a project rule, or establishes a confirmed project fact.
