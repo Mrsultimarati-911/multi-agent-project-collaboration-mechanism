@@ -1,0 +1,5 @@
+{
+  "enabled": true,
+  "webhook_url": "https://open.feishu.cn/open-apis/bot/v2/hook/REPLACE_WITH_OWNER_WEBHOOK",
+  "webhook_secret": "OPTIONAL_REPLACE_WITH_OWNER_SIGNING_SECRET"
+}

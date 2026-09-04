@@ -16,6 +16,7 @@ Ask the owner for these six items in one concise initialization request:
 4. **Employee default model and reasoning — optional.** Use `gpt-5.6-luna` / `high` when omitted.
 5. **Project-specific rules — optional.** An omitted answer means no additional rules at this time.
 6. **Work language — optional.** Use Chinese (`zh-CN`) when omitted. When Chinese is selected, all record narrative text is Chinese and record uses `_CN` templates.
+7. **Feishu notifications — optional.** Enabled by default. The owner may disable them during initialization. When enabled, monitor checks `root/notifications/feishu_config.json`; only the local notification service may read it. If present, send one startup monitoring check. On failure, report that monitoring is not connected and offer configuration guidance or disablement.
 
 Do not create `assistant_00` until item 1 is owner-confirmed. Record defaults for omitted optional items, including `work-language: zh-CN`, in `rules/00-core-governance.md`.
 
