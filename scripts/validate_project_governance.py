@@ -60,6 +60,10 @@ def main() -> int:
                 errors.append(f"missing fields in {path.name}: {', '.join(missing)}")
             if kind == "level2_results" and "assistant_audit_status:" not in path.read_text(encoding="utf-8", errors="replace"):
                 errors.append(f"final result lacks assistant_audit_status: {path.name}")
+            if kind == "level2_summary":
+                summary_missing = text_has_all(path, ("assistant_audit_reference:", "level2_results_reference:"))
+                if summary_missing:
+                    errors.append(f"summary lacks audit/result references in {path.name}: {', '.join(summary_missing)}")
 
     root_templates = root / "root" / "templates"
     if root_templates.is_dir():

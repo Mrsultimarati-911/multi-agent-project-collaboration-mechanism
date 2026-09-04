@@ -20,6 +20,11 @@ Do not create `assistant_00` until item 1 is owner-confirmed. Record defaults fo
 
 ## 3. Bootstrap assistant_00
 
-After recording the initialization, create exactly one conversation named `assistant_00|<initial-scope>`, using the configured assistant default. Give it `assets/templates/root/templates/ASSISTANT_00_STARTUP.md` as its task instruction, with the project-relative locations substituted where useful. This does not grant it permission to dispatch employees or modify formal project content.
+After recording the initialization, create two bootstrap conversations:
+
+1. `record|工作记录`, using the configured record default. Instruct it that it is the sole `work_logs/` writer; it receives assistant-audited log events and may receive a `level2_summary` only from that task's employee.
+2. `assistant_00|<initial-scope>`, using the configured assistant default. Give it `assets/templates/root/templates/ASSISTANT_00_STARTUP.md` as its task instruction, with the project-relative locations substituted where useful.
+
+This does not grant monitor permission to create any further role conversation, nor grant `assistant_00` permission to dispatch employees or modify formal project content.
 
 `assistant_00` reads existing project reference material, source/data, rules, plans, drafts, and applicable Skills before it asks the owner a prioritized requirement-alignment set of one to ten questions. Fewer than ten questions is allowed; more than ten is not. It waits for the owner's answers before proposing a plan or requesting delegation approval.

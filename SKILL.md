@@ -32,7 +32,7 @@ The first conversation of a governed project is normally `monitor`. It establish
 3. Ask the owner for the following initialization values: required global task-code project identifier; optional `record`, `assistant`, and `employee` default model/reasoning; and optional project-specific rules. See [startup protocol](references/startup-protocol.md).
 4. The identifier must be explicitly supplied or confirmed by the owner. Monitor may propose a concise identifier based on the project name but must not choose one itself. For every optional item left unspecified, write the Skill default. Treat an omitted project-specific rule set as no additional project-specific rules.
 5. Write the initialization result to `AGENTS.md` and `rules/` only as monitor and only after the owner reply. Before substantive work, every agent reads `AGENTS.md` plus the applicable `rules/` files.
-6. After the required identifier is recorded, monitor creates `assistant_00` using the configured assistant default and sends it the startup task in `assets/templates/root/templates/ASSISTANT_00_STARTUP.md`. This narrow bootstrap exception does not authorize monitor to create any other assistant or employee.
+6. After the required identifier is recorded, monitor creates `record|工作记录` using the configured record default and `assistant_00` using the configured assistant default. It sends `assistant_00` the startup task in `assets/templates/root/templates/ASSISTANT_00_STARTUP.md`. This narrow bootstrap exception does not authorize monitor to create any other assistant or employee.
 
 ### Change a project identifier
 
@@ -54,7 +54,7 @@ Use the owner-confirmed project defaults when creating `assistant`, `employee`, 
 
 Read [work-log governance](references/work-log-governance.md) whenever creating, reviewing, or submitting records. Only the `record` role writes `work_logs/`. Logs contain auditable events, not transcripts, routine updates, or unresolved speculation.
 
-The record role rejects incomplete submissions instead of filling gaps or deciding technical truth. It creates a final employee result only after an explicit assistant audit outcome is supplied.
+The record role rejects incomplete submissions instead of filling gaps or deciding technical truth. It creates a final employee result only after an explicit assistant audit outcome is supplied. An employee may submit only its own `level2_summary` directly to record; every other work-log event follows the assistant audit route.
 
 ## Tools and validation
 
@@ -66,6 +66,6 @@ Run validation after initialization and before treating a record package as stru
 ## Boundaries
 
 - A Skill is a workflow instruction, not an operating-system permission boundary. If hard enforcement is required, add appropriate repository or filesystem controls separately.
-- Do not automatically create conversations, dispatch employees, alter production assets, or accept a delivery, except for monitor's one-time creation of `assistant_00` after the owner completes required initialization.
+- Do not automatically create conversations, dispatch employees, alter production assets, or accept a delivery, except for monitor's one-time creation of `record|工作记录` and `assistant_00` after the owner completes required initialization.
 - `monitor` only accepts direct owner instructions. Other agents escalate exceptions, rule changes, and cross-role conflicts to the owner, not to the monitor.
 - Do not add project-specific facts, model names, secrets, private data, or domain-specific implementation rules to this Skill.

@@ -34,4 +34,6 @@
 
 On completion, submit the delivery evidence to the creating assistant and explicitly request assistant audit. Completion is not acceptance or authorization to promote files.
 
+After the assistant accepts the scoped delivery, create `level2_summary_<task-code>.md` in this task workspace from `root/templates/LEVEL2_SUMMARY.md` and submit only that summary directly to `record`. Do not submit any other work-log record type directly to record.
+
 ## Escalation conditions

@@ -21,10 +21,13 @@ Level 2 represents one employee task:
 - `level2_plan_<task-code>.md`
 - `level2_results_mid_<task-code>.md`
 - `level2_results_<task-code>.md`
+- `level2_summary_<task-code>.md`
 - `level2_warning_<task-code>.md`
 - `level2_error_<task-code>.md`
 
 Use concrete task codes for level 2. `level2_results_mid` is append-only audit history. Do not overwrite prior audit entries. Create `level2_results` only after a supplied assistant audit says the scoped delivery is accepted.
+
+Only the responsible employee may directly submit a `level2_summary` to record. It must reference the accepted assistant audit and its `level2_results`; record rejects or holds a premature summary. All other log submissions, including plans, mid-results, results, warnings, and errors, go to record only through the assistant.
 
 ## Required content
 
