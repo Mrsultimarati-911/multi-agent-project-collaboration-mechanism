@@ -58,6 +58,8 @@ Before an assistant submits the first approved stage plan, read [level-1 plan re
 
 Before an assistant creates or dispatches an employee, read [level-2 plan record](references/level2-plan-record.md) and use `assets/templates/root/templates/LEVEL2_PLAN.md`. A `level2_plan` is the frozen, concrete execution authorization for that employee and must reference its recorded `level1_plan`.
 
+For execution, exception, completion, or stage-close records, read [remaining work-record types](references/remaining-work-record-types.md) and use the matching template. `level2_results_mid` is the only append-only attempt ledger; warning and error preserve an interruption classification; final results and summaries are new records, never renames of earlier ones.
+
 The record role rejects incomplete submissions instead of filling gaps or deciding technical truth. It creates a final employee result only after an explicit assistant audit outcome is supplied. An employee may submit only its own `level2_summary` directly to record; every other work-log event follows the assistant audit route.
 
 ## Tools and validation

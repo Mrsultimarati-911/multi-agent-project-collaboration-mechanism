@@ -18,6 +18,8 @@ Every approved stage begins with a frozen `level1_plan` contract before any empl
 
 Every dispatched employee also has a frozen concrete `level2_plan`, linked to its level-1 plan and followed by an operational task package. Material revisions are appended only with owner approval; a changed objective or deliverable receives a new task code.
 
+The Skill supplies dedicated templates for append-only employee audit attempts, final results, summaries, warning/error recovery and pause records, assistant stage summaries, and record-generated stage results.
+
 ## Use
 
 Install the Skill into your Codex skills directory, then explicitly invoke:

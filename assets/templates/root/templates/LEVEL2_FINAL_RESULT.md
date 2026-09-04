@@ -5,14 +5,19 @@
 - task_name:
 - responsible_role: record
 - event_date:
-- status:
+- status: accepted-final
 - parent_or_related_record:
+- level2_plan_reference:
+- level2_results_mid_reference:
+- accepted_attempt_number:
+- assistant_audit_reference:
 - assistant_audit_status: accepted_as_scoped
+- final_completion_timestamp:
 
-## Final completion
+## Final completion and deliverables
 
-## Audit evidence
+## Validation and audit evidence
 
-## Limitations and unresolved items
+## Accepted scope and non-extrapolation boundary
 
-## Next state
+## Limitations, unresolved items, and next state

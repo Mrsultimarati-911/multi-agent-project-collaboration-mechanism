@@ -45,6 +45,8 @@ Only the responsible employee may directly submit a `level2_summary` to record. 
 
 Every log contains: record type, code, task/stage name, responsible role, event date, status, source/parent references, a concise factual event description, evidence paths or commands, limitations, and next state. Result records also state whether the evidence is final, scoped, unresolved, rejected, or requires owner action.
 
+Use [remaining work-record types](remaining-work-record-types.md) for the required templates and transitions of `level2_results_mid`, `level2_results`, both warning/error levels, both summary levels, and `level1_results`.
+
 Warnings remain visible if they become errors. A correction is a new append or related record, never silent replacement of the earlier event.
 
 ## Owner-authorized identifier change

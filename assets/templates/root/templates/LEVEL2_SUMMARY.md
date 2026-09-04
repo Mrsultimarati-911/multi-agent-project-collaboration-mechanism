@@ -11,8 +11,10 @@
 
 ## Completed scope
 
-## Evidence and verification
+## Final implementation approach and workflow
 
-## Limitations and follow-up
+## Evidence, verification, and audit outcome
+
+## Exceptions, limitations, and follow-up
 
 Submit this document only to `record` after the creating assistant has accepted the scoped delivery. `record` writes the authoritative copy to `work_logs/`; this workspace copy is a submission artifact, not an authoritative log.
