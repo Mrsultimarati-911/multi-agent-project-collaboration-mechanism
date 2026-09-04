@@ -18,6 +18,11 @@ REQUIRED_LEVEL1_PLAN_FIELDS = (
     "project_identifier:", "accountable_assistant:", "owner_approval_date:",
     "owner_approval_evidence:", "plan_status:", "frozen_at:", "frozen_by:",
 )
+REQUIRED_LEVEL2_PLAN_FIELDS = (
+    "responsible_assistant:", "responsible_employee:", "level1_plan_reference:",
+    "owner_dispatch_approval_date:", "owner_dispatch_approval_evidence:",
+    "employee_model:", "employee_reasoning:", "workspace:", "plan_status:",
+)
 
 
 def text_has_all(path: Path, fields: tuple[str, ...]) -> list[str]:
@@ -72,6 +77,10 @@ def main() -> int:
                 plan_missing = text_has_all(path, REQUIRED_LEVEL1_PLAN_FIELDS)
                 if plan_missing:
                     errors.append(f"level1 plan missing contract fields in {path.name}: {', '.join(plan_missing)}")
+            if kind == "level2_plan":
+                plan_missing = text_has_all(path, REQUIRED_LEVEL2_PLAN_FIELDS)
+                if plan_missing:
+                    errors.append(f"level2 plan missing contract fields in {path.name}: {', '.join(plan_missing)}")
             if kind == "level2_results" and "assistant_audit_status:" not in path.read_text(encoding="utf-8", errors="replace"):
                 errors.append(f"final result lacks assistant_audit_status: {path.name}")
             if kind == "level2_summary":

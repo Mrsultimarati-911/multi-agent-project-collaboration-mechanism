@@ -12,6 +12,12 @@ Create `level1_plan_<project>_<level1>-##-###-####.md` only after explicit owner
 
 After the initial freeze, record alone may append a material change to the plan's amendment ledger. It must retain the prior baseline and include the owner approval, reason, impact, and linked replacement records. Do not silently edit the baseline sections or delete a previous plan decision.
 
+## Level-2 plan contract
+
+Create `level2_plan_<project>_<level1>-<assistant>-<employee>-<employee-task>.md` only after explicit owner approval to dispatch that employee and before the employee conversation is created or given instructions. It must cite an existing `level1_plan` and use the concrete task code, never `#`. It fixes the employee identity, allowed read/write scope, objective, expected deliverable, audit evidence, escalation conditions, and delivery route. Use [level-2 plan record](level2-plan-record.md) for required content.
+
+For the same task identity, record alone may append an owner-approved material dispatch change to the plan's amendment ledger. A changed objective or new deliverable is a new employee task: allocate a new employee-task serial and create a new `level2_plan`; do not disguise it as a revision of the old task.
+
 ## Levels and filenames
 
 Level 1 represents an owner-approved project stage or assistant-level initiative:

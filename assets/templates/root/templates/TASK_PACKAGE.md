@@ -4,6 +4,7 @@
 - task_name:
 - dispatch_status: owner-approved
 - level1_plan_reference:
+- level2_plan_reference:
 - responsible_employee:
 - employee_model: `owner-specified, or gpt-5.6-luna`
 - employee_reasoning: `owner-specified, or high`

@@ -56,6 +56,8 @@ Read [work-log governance](references/work-log-governance.md) whenever creating,
 
 Before an assistant submits the first approved stage plan, read [level-1 plan record](references/level1-plan-record.md) and use `assets/templates/root/templates/LEVEL1_PLAN.md`. A `level1_plan` is the frozen action contract that precedes every employee dispatch; material changes use its record-managed amendment ledger rather than silent edits.
 
+Before an assistant creates or dispatches an employee, read [level-2 plan record](references/level2-plan-record.md) and use `assets/templates/root/templates/LEVEL2_PLAN.md`. A `level2_plan` is the frozen, concrete execution authorization for that employee and must reference its recorded `level1_plan`.
+
 The record role rejects incomplete submissions instead of filling gaps or deciding technical truth. It creates a final employee result only after an explicit assistant audit outcome is supplied. An employee may submit only its own `level2_summary` directly to record; every other work-log event follows the assistant audit route.
 
 ## Tools and validation

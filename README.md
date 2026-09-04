@@ -16,6 +16,8 @@ Before every assistant plan, action decision, or employee dispatch request, the 
 
 Every approved stage begins with a frozen `level1_plan` contract before any employee dispatch. It captures authorization evidence, scope, acceptance, alignment, delegation, validation, and escalation; later material owner-approved changes are appended to its amendment ledger rather than silently rewriting history.
 
+Every dispatched employee also has a frozen concrete `level2_plan`, linked to its level-1 plan and followed by an operational task package. Material revisions are appended only with owner approval; a changed objective or deliverable receives a new task code.
+
 ## Use
 
 Install the Skill into your Codex skills directory, then explicitly invoke:

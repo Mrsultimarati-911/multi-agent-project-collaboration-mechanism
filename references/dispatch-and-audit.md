@@ -20,7 +20,7 @@ Human shorthand such as `a00` and `e00` may help the owner refer to roles during
 
 ## Required employee task package
 
-Use `assets/templates/root/templates/TASK_PACKAGE.md` as the source template. A complete package contains:
+First record the owner-approved `level2_plan`. Then use `assets/templates/root/templates/TASK_PACKAGE.md` as the source template; it is the employee's detailed operational instruction and must cite both the level-1 and level-2 plan records. A complete package contains:
 
 1. task code and task name;
 2. owner-approved objective and reason for dispatch;
