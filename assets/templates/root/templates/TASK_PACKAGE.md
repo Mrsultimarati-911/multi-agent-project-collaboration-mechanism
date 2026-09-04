@@ -21,6 +21,13 @@
 
 ## Confirmed decisions and fixed assumptions
 
+## Four-quadrant alignment summary
+
+- shared confirmed context and boundaries:
+- material owner-context gaps / questions asked (maximum 10):
+- agent-supplied risks, alternatives, or corrections:
+- unknowns converted to testable assumptions or minimal experiments:
+
 ## Acceptance criteria and verification
 
 ## Delivery location and required report

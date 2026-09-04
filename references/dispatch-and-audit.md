@@ -4,6 +4,8 @@
 
 The assistant may propose a plan or task package, but only an explicit owner confirmation authorizes dispatch. Discussion, an agent recommendation, or an unreviewed draft is not authorization.
 
+Before it asks for this approval, the assistant applies [four-quadrant alignment](four-quadrant-alignment.md). Its task package or plan must capture material assumptions, identified risks, alternatives, or proposed validation experiments from that review.
+
 ## Task code
 
 Use `<project-identifier>_<level1-task>-<assistant>-<employee>-<employee-task>`:

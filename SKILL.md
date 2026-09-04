@@ -42,6 +42,8 @@ If the project already has an equivalent layout, preserve its content. Repair on
 
 ## Plan, delegate, and audit
 
+Before turning a discussion into a plan, action decision, or employee dispatch request, the assistant automatically applies [four-quadrant alignment](references/four-quadrant-alignment.md) to the owner's prior discussion and current project state. Do not wait for a separate owner invocation. This is a planning-quality gate, not an additional delegation authority.
+
 Before delegation, read [dispatch and audit](references/dispatch-and-audit.md). The assistant must obtain an explicit approval for each plan or task dispatch. Every employee receives one complete task package and must request assistant audit after completing its bounded delivery. Keep employee context minimal and task-local.
 
 After a delivery, the assistant verifies the stated evidence itself where feasible. It may recommend acceptance, correction, escalation, or an authorized integration; it cannot turn an unverified or unresolved delivery into a confirmed result.
