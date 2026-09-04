@@ -1,0 +1,9 @@
+interface_id: 
+version: 1
+owner_assistant: 
+consumers: []
+status: proposed | published | superseded
+schema_or_signature: {}
+primary_key: []
+compatibility_notes: 
+material_change_requires: coordinating-assistant-review

@@ -1,0 +1,17 @@
+artifact_id: 
+name: 
+artifact_type: common_data | common_artifacts
+version: v0001
+status: published
+producer_task: 
+producer_employee: 
+producer_assistant: 
+assistant_audit_reference: 
+created_at: 
+sources: []
+content_hash:
+  algorithm: sha256
+  value: 
+schema_or_interface: 
+replaces: 
+notes: 

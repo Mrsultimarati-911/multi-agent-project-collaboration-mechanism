@@ -2,13 +2,19 @@
 
 - task_code: `<project-identifier>_<level1-task>-<assistant>-<employee>-<employee-task>`
 - task_name:
-- dispatch_status: owner-approved
+- dispatch_status: `owner-approved | envelope-authorized`
 - level1_plan_reference:
 - level2_plan_reference:
 - responsible_employee:
 - employee_model: `owner-specified, or gpt-5.6-luna`
 - employee_reasoning: `owner-specified, or high`
 - expected_duration:
+- depends_on: []
+- consumes: []
+- produces: []
+- base_revision:
+- worktree_or_branch:
+- conflict_scope:
 
 ## Objective
 
@@ -39,3 +45,7 @@ On completion, submit the delivery evidence to the creating assistant and explic
 After the assistant accepts the scoped delivery, create `level2_summary_<task-code>.md` in this task workspace from `root/templates/LEVEL2_SUMMARY.md` and submit only that summary directly to `record`. Do not submit any other work-log record type directly to record.
 
 ## Escalation conditions
+
+- authority-envelope boundary:
+- owner_intervention_required trigger:
+- notification route: governance / record event only; employee never contacts Feishu directly

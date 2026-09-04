@@ -43,7 +43,7 @@ Level 2 represents one employee task:
 
 Use concrete task codes for level 2. `level2_results_mid` is append-only audit history. Do not overwrite prior audit entries. Create `level2_results` only after a supplied assistant audit says the scoped delivery is accepted.
 
-Only the responsible employee may directly submit a `level2_summary` to record. It must reference the accepted assistant audit and its `level2_results`; record rejects or holds a premature summary. All other log submissions, including plans, mid-results, results, warnings, and errors, go to record only through the assistant.
+Only the responsible employee may directly submit a `level2_summary` to record. It must reference the accepted assistant audit and its `level2_results`; record rejects or holds a premature summary. All other log submissions, including plans, mid-results, results, warnings, and errors, go to record only through the assistant. V2 adds versioned shared-artifact references, task dependencies, and `owner_intervention_required` notification status to applicable events.
 
 ## Required content
 
@@ -59,4 +59,4 @@ Task-code history is normally append-only. An owner-approved project-identifier 
 
 ## Validation boundary
 
-The validator can confirm names, fields, and references. It cannot prove an artifact's correctness or validate a claim that an agent has not independently audited.
+V2 adds `record_engine.py`, which deterministically checks structured event fields, allowed status transitions, artifact manifests, dependencies and append-only destinations before a record is written. The validator and engine cannot prove an artifact's correctness or validate a claim that an agent has not independently audited.

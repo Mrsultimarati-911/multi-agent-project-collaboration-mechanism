@@ -20,6 +20,16 @@
 - supersedes:
 - frozen_at:
 - frozen_by: human
+- authority_envelope_reference:
+- dispatch_authority: `owner-approved | envelope-authorized`
+- depends_on: []
+- consumes: []
+- produces: []
+- artifact_references: []
+- interface_references: []
+- base_revision:
+- worktree_or_branch:
+- conflict_scope:
 
 ## 1. Authorized task
 
@@ -43,6 +53,8 @@
 - recommended approach:
 - key steps:
 - dependencies:
+- dependency DAG / blocking condition:
+- write lease (when Git worktree is unavailable):
 - permitted exploration boundary:
 - intermediate artifacts to retain:
 
@@ -67,6 +79,8 @@
 - assistant escalation conditions:
 - recoverable warning conditions:
 - owner-intervention / level2_error conditions:
+- owner_intervention_required: false
+- notification_status: not-required
 - long-task estimate and check cadence:
 
 ## 7. Frozen baseline

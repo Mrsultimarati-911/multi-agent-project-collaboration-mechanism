@@ -16,6 +16,23 @@
 - supersedes:
 - frozen_at:
 - frozen_by: human
+- coordinating_assistant: assistant_00
+- participating_assistants: []
+- authority_envelope_reference:
+
+## V2 Authority Envelope and workstreams
+
+```yaml
+authority_envelope:
+  auto_dispatch: false
+  max_module_assistants: 0
+  max_parallel_employees_per_assistant: 5
+  allowed_task_types: []
+  publish_permissions: { common_data: false, common_artifacts: false }
+  integration_permissions: { assistant_workspace: true, project_demo: false, project_final: false }
+  prohibited_without_owner: [change_project_goal, overwrite_raw_data, destructive_delete, external_publish, paid_external_action, project_final]
+workstreams: {}
+```
 
 ## 1. Owner-confirmed objective
 
@@ -53,6 +70,12 @@
 | Employee | Planned task code | Objective | Expected deliverable | Workspace | Dependencies | Auditor |
 |---|---|---|---|---|---|---|
 | | | | | | | |
+
+## 5.1 Module interfaces and integration
+
+- interface contract references: `plan/interfaces/`
+- module ownership / Stage DAG:
+- integration authority: coordinating assistant only
 
 ## 6. Audit, integration, and owner acceptance
 

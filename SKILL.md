@@ -1,6 +1,6 @@
 ---
 name: multi-agent-project-collaboration-mechanism
-description: Establish and operate an explicitly enabled, human-led multi-agent project workflow with monitor-led initialization, isolated execution, assistant audit gates, and append-only work records. Use only when the user explicitly enables this mechanism for a project or invokes $multi-agent-project-collaboration-mechanism.
+description: Establish and operate an explicitly enabled, human-led V2 multi-agent workflow with isolated execution, controlled shared artifacts, bounded assistant autonomy, deterministic governance, and owner escalation. Use only when the user explicitly enables this mechanism for a project or invokes $multi-agent-project-collaboration-mechanism.
 ---
 
 # Multi Agent Project Collaboration Mechanism
@@ -13,13 +13,15 @@ The human project owner is the sole authority for decisions, scope, delegation a
 
 The mechanism's rules are defaults, not immutable policy. Only the owner may change a default, by giving the change to `monitor`; monitor records the owner-confirmed replacement in `AGENTS.md` or `rules/`. Until then, the defaults below remain binding.
 
-Use five roles:
+Use the same five roles, with a bounded execution topology:
 
 - `monitor`: first project agent; formalizes owner-provided project rules and maintains governance only.
 - `assistant`: plans, decomposes, dispatches after approval, audits deliveries, and proposes integration.
 - `employee`: executes one bounded task in its own workspace.
 - `record`: validates and writes auditable work logs only.
 - project owner: the human decision maker.
+
+V2 permits `Owner → coordinating assistant → module assistant → employee`, and no deeper automatic assistant nesting. Read [V2 governance](references/v2-governance.md) before multi-assistant delegation, shared publication, Authority Envelope use, record-engine submission, or owner escalation.
 
 Read [roles and authority](references/roles-and-authority.md) before assigning a role or changing permissions.
 
@@ -36,7 +38,7 @@ The first conversation of a governed project is normally `monitor`. It establish
 
 ### Change a project identifier
 
-Only the owner may request a task-code project-identifier change through `monitor`. When this occurs, monitor records the old-to-new mapping and effective decision in the rules, instructs `record` to update every already-effective identifier (including filenames, code fields, and internal references), and notifies every assistant before any further task is created or audited. This is a narrow owner-authorized exception to normal append-only record handling; do not apply it to any other historical fact.
+Only the owner may request a project-identifier change through `monitor`. Monitor records an alias/mapping and effective decision in the rules. Historical task codes, filenames and references remain immutable; only new tasks use the new identifier or mapping. Notify all assistants before creating further tasks.
 
 If the project already has an equivalent layout, preserve its content. Repair only missing mechanism files, never overwrite project material without explicit approval.
 
@@ -44,7 +46,7 @@ If the project already has an equivalent layout, preserve its content. Repair on
 
 Before turning a discussion into a plan, action decision, or employee dispatch request, the assistant automatically applies [four-quadrant alignment](references/four-quadrant-alignment.md) to the owner's prior discussion and current project state. Do not wait for a separate owner invocation. This is a planning-quality gate, not an additional delegation authority.
 
-Before delegation, read [dispatch and audit](references/dispatch-and-audit.md). The assistant must obtain an explicit approval for each plan or task dispatch. Every employee receives one complete task package and must request assistant audit after completing its bounded delivery. Keep employee context minimal and task-local.
+Before delegation, read [dispatch and audit](references/dispatch-and-audit.md) and [V2 governance](references/v2-governance.md). Level 1 remains owner-approved, but its Authority Envelope may authorize bounded dispatch, retry, correction, shared publication and integration without repeated owner approval. Every employee receives one complete task package and must request assistant audit after completing its bounded delivery. Keep employee context minimal and task-local.
 
 After a delivery, the assistant verifies the stated evidence itself where feasible. It may recommend acceptance, correction, escalation, or an authorized integration; it cannot turn an unverified or unresolved delivery into a confirmed result.
 
@@ -62,16 +64,25 @@ For execution, exception, completion, or stage-close records, read [remaining wo
 
 The record role rejects incomplete submissions instead of filling gaps or deciding technical truth. It creates a final employee result only after an explicit assistant audit outcome is supplied. An employee may submit only its own `level2_summary` directly to record; every other work-log event follows the assistant audit route.
 
+## V2 controlled sharing, integration, and escalation
+
+Employees never write shared locations directly. The only shared route is `workspace → assistant audit → publish_artifact.py → versioned common_data/ or common_artifacts/ manifest`. Module assistants integrate only inside their own `assistant_workspace/<assistant-id>/`; the coordinating assistant alone integrates the current Level 1 into `project_demo/`. `project_final/`, destructive/external/paid operations and all R3 actions always require explicit owner approval.
+
+Record prepares factual Chinese events; `record_engine.py` determines structural, state, dependency, reference and append-only legality. Invoke `notifications/feishu.py` only from a governance event with `owner_intervention_required: true`; it reads secrets exclusively from environment variables, deduplicates unresolved events and never treats Feishu as approval.
+
 ## Tools and validation
 
-- `scripts/initialize_project.py`: creates missing standard mechanism directories and copies non-project templates and the read-only validator to the project's `root/` directory. Run it only after monitor has found missing paths and the owner has authorized creation. It never overwrites by default.
-- `scripts/validate_project_governance.py`: checks layout, task-code shape, and required record/task-package fields. It is read-only.
+- `scripts/initialize_project.py`: creates missing V2 governance scaffolding, including shared directories, assistant workspaces and root tools; it never overwrites project content.
+- `scripts/publish_artifact.py`: publishes an assistant-audited immutable artifact version and manifest.
+- `scripts/record_engine.py`: validates and appends structured governance events.
+- `scripts/notifications/feishu.py`: sends owner-only escalation decision packages when environment credentials exist.
+- `scripts/validate_project_governance.py`: read-only V1/V2 layout, record and manifest checker.
 
 Run validation after initialization and before treating a record package as structurally valid. Validation checks structure, not whether technical claims are true.
 
 ## Boundaries
 
 - A Skill is a workflow instruction, not an operating-system permission boundary. If hard enforcement is required, add appropriate repository or filesystem controls separately.
-- Do not automatically create conversations, dispatch employees, alter production assets, or accept a delivery, except for monitor's one-time creation of `record|工作记录` and `assistant_00` after the owner completes required initialization.
+- Do not automatically create conversations, dispatch employees, alter production assets, or accept a delivery, except for monitor's one-time creation of `record|工作记录` and `assistant_00` after the owner completes required initialization. An approved Authority Envelope is the only exception to repeated owner approval for bounded V2 dispatch and correction.
 - `monitor` only accepts direct owner instructions. Other agents escalate exceptions, rule changes, and cross-role conflicts to the owner, not to the monitor.
 - Do not add project-specific facts, model names, secrets, private data, or domain-specific implementation rules to this Skill.

@@ -12,6 +12,25 @@
 
 ---
 
+## V2：受控共享与边界内自治
+
+V2 在 V1 的“人类最终决策、隔离 workspace、两级计划、append-only 记录”之上，增加以下能力：
+
+| V2 能力 | 解决的问题 | 默认边界 |
+| --- | --- | --- |
+| `common_data/` / `common_artifacts/` | 多 Agent 复用已审核中间产物 | 仅经 audit + 版本化 publish；employee 不可直接写 |
+| `assistant_workspace/` 与 Stage DAG | 多 assistant 分模块并行 | coordinator 管跨模块与 `project_demo/`；模块 assistant 只写自身空间 |
+| Authority Envelope | 避免负责人逐项审批低风险返工与派发 | Level 1 由负责人预先明确边界；R3 永远人工批准 |
+| Record Engine | 将字段、状态、引用、依赖校验变为确定性程序 | record 仍负责可读叙述，不单独裁定合法性 |
+| Feishu escalation | 真正需人工决定时主动提醒 | 仅 `owner_intervention_required: true`；飞书不是审批入口 |
+
+> [!IMPORTANT]
+> V2 位于独立 `v2` 分支，V1 `main` 不被改写。已有 V1 项目可以安全运行初始化器补齐目录；历史工作记录和任务身份保持可读且不可重写。
+
+共享工件的唯一正式路径是：`employee workspace → assistant audit → publish_artifact.py → immutable common_data/common_artifacts version + manifest`。每一个已发布版本均包含生产任务、审核引用、来源和 SHA-256 内容散列；下游任务必须引用具体版本。
+
+---
+
 它将决策、规划、执行、治理和可追溯记录分为五类角色：
 
 - 人类项目负责人：审批、决策、例外处理与最终验收；

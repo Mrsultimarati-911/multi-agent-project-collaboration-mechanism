@@ -20,6 +20,18 @@
 - supersedes:
 - frozen_at:
 - frozen_by: human
+- authority_envelope_reference:
+- dispatch_authority: `owner-approved | envelope-authorized`
+- depends_on: []
+- consumes: []
+- produces: []
+- artifact_references: []
+- interface_references: []
+- base_revision:
+- worktree_or_branch:
+- conflict_scope:
+- owner_intervention_required: false
+- notification_status: not-required
 
 ## 已授权任务
 

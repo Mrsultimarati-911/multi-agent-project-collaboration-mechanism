@@ -8,7 +8,8 @@ import sys
 from pathlib import Path
 
 
-REQUIRED_DIRS = ("root", "rules", "ai_workspace", "work_logs", "draft", "plan", "project_demo", "project_final", "raw_data")
+V1_REQUIRED_DIRS = ("root", "rules", "ai_workspace", "work_logs", "draft", "plan", "project_demo", "project_final", "raw_data")
+V2_REQUIRED_DIRS = ("common_data", "common_artifacts", "assistant_workspace", "plan/interfaces")
 TASK_CODE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*_\d{2}-\d{2}-\d{3}-\d{4}$")
 LEVEL1_PLAN_CODE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*_\d{2}-##-###-####$")
 LEVEL1_ASSISTANT_CODE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*_\d{2}-\d{2}-###-####$")
@@ -51,17 +52,25 @@ def main() -> int:
     warnings: list[str] = []
     if not (root / "AGENTS.md").is_file():
         errors.append("missing AGENTS.md")
-    for directory in REQUIRED_DIRS:
+    core_text = ""
+    core_rule = root / "rules" / "00-core-governance.md"
+    if core_rule.is_file():
+        core_text = core_rule.read_text(encoding="utf-8", errors="replace")
+    version_match = re.search(r"^\s*-\s*governance-version:\s*`?(\d+)`?\s*$", core_text, re.MULTILINE)
+    governance_version = int(version_match.group(1)) if version_match else 1
+    for directory in V1_REQUIRED_DIRS:
         if not (root / directory).is_dir():
             errors.append(f"missing directory: {directory}/")
+    for directory in V2_REQUIRED_DIRS:
+        if not (root / directory).is_dir():
+            (errors if governance_version >= 2 else warnings).append(f"missing V2 directory: {directory}/")
     for filename in ("00-core-governance.md", "01-role-and-filesystem.md", "02-work-log-governance.md"):
         if not (root / "rules" / filename).is_file():
             errors.append(f"missing rule: rules/{filename}")
 
     project_identifier = None
-    core_rule = root / "rules" / "00-core-governance.md"
     if core_rule.is_file():
-        match = re.search(r"^\s*-\s*project-code-prefix:\s*`?([^`\s]+)`?\s*$", core_rule.read_text(encoding="utf-8", errors="replace"), re.MULTILINE)
+        match = re.search(r"^\s*-\s*project-code-prefix:\s*`?([^`\s]+)`?\s*$", core_text, re.MULTILINE)
         if match and "<" not in match.group(1):
             project_identifier = match.group(1)
 
@@ -127,6 +136,19 @@ def main() -> int:
                 errors.append(f"invalid task code in {path.relative_to(root)}")
             elif candidate and "<" not in candidate and project_identifier and not candidate.startswith(f"{project_identifier}_"):
                 errors.append(f"project identifier mismatch in {path.relative_to(root)}: expected {project_identifier}_")
+
+    for kind in ("common_data", "common_artifacts"):
+        directory = root / kind
+        if not directory.is_dir():
+            continue
+        for manifest in directory.glob("*/*/manifest.yaml"):
+            try:
+                payload = __import__("json").loads(manifest.read_text(encoding="utf-8"))
+                for field in ("artifact_id", "version", "producer_task", "producer_assistant", "content_hash"):
+                    if not payload.get(field):
+                        errors.append(f"artifact manifest missing {field}: {manifest.relative_to(root)}")
+            except Exception as exc:
+                errors.append(f"invalid artifact manifest {manifest.relative_to(root)}: {exc}")
 
     for message in warnings:
         print(f"WARNING: {message}")

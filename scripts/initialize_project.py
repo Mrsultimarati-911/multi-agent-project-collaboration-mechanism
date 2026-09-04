@@ -39,7 +39,10 @@ def main() -> int:
 
     created: list[Path] = []
     skipped: list[Path] = []
-    for name in ("ai_workspace", "work_logs", "draft", "plan", "project_demo", "project_final", "raw_data"):
+    for name in (
+        "ai_workspace", "assistant_workspace", "work_logs", "draft", "plan/interfaces",
+        "project_demo", "project_final", "raw_data", "common_data", "common_artifacts",
+    ):
         target = root / name
         if not target.exists():
             target.mkdir(parents=True)
@@ -47,12 +50,11 @@ def main() -> int:
     copy_missing(TEMPLATES / "AGENTS.md", root / "AGENTS.md", created, skipped)
     copy_missing(TEMPLATES / "rules", root / "rules", created, skipped)
     copy_missing(TEMPLATES / "root", root / "root", created, skipped)
-    copy_missing(
-        SKILL_ROOT / "scripts" / "validate_project_governance.py",
-        root / "root" / "validate_project_governance.py",
-        created,
-        skipped,
-    )
+    for relative in (
+        Path("validate_project_governance.py"), Path("record_engine.py"),
+        Path("publish_artifact.py"), Path("notifications") / "feishu.py",
+    ):
+        copy_missing(SKILL_ROOT / "scripts" / relative, root / "root" / relative, created, skipped)
 
     core_rule = root / "rules" / "00-core-governance.md"
     if args.prefix and core_rule in created and "<SET_BY_OWNER>" in core_rule.read_text(encoding="utf-8"):
@@ -67,6 +69,8 @@ def main() -> int:
     print(f"preserved_existing={len(skipped)}")
     for path in skipped:
         print(f"PRESERVE {path.relative_to(root)}")
+    if skipped:
+        print("MIGRATION_WARNING existing governance content was preserved; review V2 rules before enabling V2 autonomy.")
     return 0
 
 

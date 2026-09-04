@@ -1,0 +1,14 @@
+{
+  "record_type": "level2_error",
+  "task_code": "<project>_00-00-000-0000",
+  "task_name": "",
+  "responsible_role": "assistant_00",
+  "status": "paused",
+  "previous_status": "running",
+  "event_description": "",
+  "depends_on": [],
+  "artifact_references": [],
+  "owner_intervention_required": true,
+  "notification_status": "pending",
+  "record_reference": ""
+}

@@ -16,6 +16,16 @@
 - supersedes:
 - frozen_at:
 - frozen_by: human
+- coordinating_assistant: assistant_00
+- participating_assistants: []
+- authority_envelope_reference:
+
+## V2 授权边界与工作流
+
+- Authority Envelope（自动派发、共享发布、集成权限、R3 禁止项）：
+- workstreams / Stage DAG：
+- 接口契约引用：`plan/interfaces/`
+- integration authority: coordinating assistant only
 
 ## 负责人确认的目标
 

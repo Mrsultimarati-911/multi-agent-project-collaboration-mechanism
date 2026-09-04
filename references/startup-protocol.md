@@ -2,9 +2,9 @@
 
 `monitor` owns the startup sequence after the human enables this Skill in the first project conversation.
 
-## 1. Repair the mechanism layout
+## 1. Repair the V2 mechanism layout
 
-Inspect the project root and create every missing standard Skill path immediately. Preserve every existing path and file. The missing layout itself is not a decision that needs another owner approval.
+Inspect the project root and create every missing standard Skill path immediately, including `common_data/`, `common_artifacts/`, `assistant_workspace/` and `plan/interfaces/`. Enabling this Skill is authorization to create missing governance scaffolding, never to overwrite existing project content.
 
 ## 2. Ask for the initialization input
 
