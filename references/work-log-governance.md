@@ -6,6 +6,12 @@ Only the `record` role writes `work_logs/`. A record is concise evidence for a d
 
 Record only an owner-confirmed plan or dispatch, substantive audited delivery, correction/recovery trajectory, warning, error, stage completion, or audit outcome. Do not record routine coordination, raw conversation, unconfirmed ideas, or an employee's unverified self-report as a final result.
 
+## Level-1 plan contract
+
+Create `level1_plan_<project>_<level1>-##-###-####.md` only after explicit owner approval and before the first `level2_plan` or employee dispatch in that level-1 task. It is a frozen action contract, not a discussion transcript. Use [level-1 plan record](level1-plan-record.md) for its required content.
+
+After the initial freeze, record alone may append a material change to the plan's amendment ledger. It must retain the prior baseline and include the owner approval, reason, impact, and linked replacement records. Do not silently edit the baseline sections or delete a previous plan decision.
+
 ## Levels and filenames
 
 Level 1 represents an owner-approved project stage or assistant-level initiative:

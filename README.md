@@ -14,6 +14,8 @@ The Skill provides a standard project layout (including `raw_data/`), `AGENTS.md
 
 Before every assistant plan, action decision, or employee dispatch request, the Skill automatically applies a four-quadrant alignment review: confirmed shared context; material owner-context gaps; agent-supplied knowledge, risks, and alternatives; and jointly unknown items converted into testable assumptions. It asks no questions when context is sufficient and never asks more than ten material alignment questions.
 
+Every approved stage begins with a frozen `level1_plan` contract before any employee dispatch. It captures authorization evidence, scope, acceptance, alignment, delegation, validation, and escalation; later material owner-approved changes are appended to its amendment ledger rather than silently rewriting history.
+
 ## Use
 
 Install the Skill into your Codex skills directory, then explicitly invoke:

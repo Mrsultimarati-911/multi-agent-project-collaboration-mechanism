@@ -54,6 +54,8 @@ Use the owner-confirmed project defaults when creating `assistant`, `employee`, 
 
 Read [work-log governance](references/work-log-governance.md) whenever creating, reviewing, or submitting records. Only the `record` role writes `work_logs/`. Logs contain auditable events, not transcripts, routine updates, or unresolved speculation.
 
+Before an assistant submits the first approved stage plan, read [level-1 plan record](references/level1-plan-record.md) and use `assets/templates/root/templates/LEVEL1_PLAN.md`. A `level1_plan` is the frozen action contract that precedes every employee dispatch; material changes use its record-managed amendment ledger rather than silent edits.
+
 The record role rejects incomplete submissions instead of filling gaps or deciding technical truth. It creates a final employee result only after an explicit assistant audit outcome is supplied. An employee may submit only its own `level2_summary` directly to record; every other work-log event follows the assistant audit route.
 
 ## Tools and validation

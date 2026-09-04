@@ -10,9 +10,14 @@ from pathlib import Path
 
 REQUIRED_DIRS = ("root", "rules", "ai_workspace", "work_logs", "draft", "plan", "project_demo", "project_final", "raw_data")
 TASK_CODE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*_\d{2}-\d{2}-\d{3}-\d{4}$")
+LEVEL1_PLAN_CODE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*_\d{2}-##-###-####$")
 LOG_NAME = re.compile(r"^(level[12]_(?:results_mid|results|plan|summary|warning|error))_(.+)\.md$")
 REQUIRED_LOG_FIELDS = ("record_type:", "task_code:", "task_name:", "responsible_role:", "event_date:", "status:")
 REQUIRED_TASK_FIELDS = ("task_code:", "task_name:", "dispatch_status:", "responsible_employee:", "allowed_reads:", "allowed_writes:")
+REQUIRED_LEVEL1_PLAN_FIELDS = (
+    "project_identifier:", "accountable_assistant:", "owner_approval_date:",
+    "owner_approval_evidence:", "plan_status:", "frozen_at:", "frozen_by:",
+)
 
 
 def text_has_all(path: Path, fields: tuple[str, ...]) -> list[str]:
@@ -55,9 +60,18 @@ def main() -> int:
                 errors.append(f"invalid level2 task code in {path.name}")
             elif kind.startswith("level2") and project_identifier and not code.startswith(f"{project_identifier}_"):
                 errors.append(f"project identifier mismatch in {path.name}: expected {project_identifier}_")
+            if kind == "level1_plan":
+                if not LEVEL1_PLAN_CODE.fullmatch(code):
+                    errors.append(f"invalid level1 aggregate task code in {path.name}")
+                elif project_identifier and not code.startswith(f"{project_identifier}_"):
+                    errors.append(f"project identifier mismatch in {path.name}: expected {project_identifier}_")
             missing = text_has_all(path, REQUIRED_LOG_FIELDS)
             if missing:
                 errors.append(f"missing fields in {path.name}: {', '.join(missing)}")
+            if kind == "level1_plan":
+                plan_missing = text_has_all(path, REQUIRED_LEVEL1_PLAN_FIELDS)
+                if plan_missing:
+                    errors.append(f"level1 plan missing contract fields in {path.name}: {', '.join(plan_missing)}")
             if kind == "level2_results" and "assistant_audit_status:" not in path.read_text(encoding="utf-8", errors="replace"):
                 errors.append(f"final result lacks assistant_audit_status: {path.name}")
             if kind == "level2_summary":

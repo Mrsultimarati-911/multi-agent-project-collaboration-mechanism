@@ -12,6 +12,7 @@ This project uses the Multi Agent Project Collaboration Mechanism. `AGENTS.md` a
 8. No employee task is dispatched without explicit owner approval and a complete task package.
 9. Human-only aliases `aNN` and `eNN` mean `assistant_NN` and `employee_NN` when the owner uses them. Agents never use aliases in their own replies, inter-agent messages, task files, or work records; monitor and record have no aliases.
 10. Before an `assistant` turns discussion into a plan, action decision, or dispatch request, it automatically completes the four-quadrant alignment review in the applicable rules. Material unanswered gaps pause the action decision; non-material gaps become explicit assumptions or an exploration plan.
+11. The first approved plan of every level-1 task must be recorded as a frozen `level1_plan` before any employee is created or a `level2_plan` is recorded. Material plan changes are appended by `record` to that plan's amendment ledger only after owner approval.
 
 ## Project-specific rules
 
