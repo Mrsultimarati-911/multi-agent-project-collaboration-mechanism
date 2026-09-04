@@ -4,6 +4,7 @@
 - project-code-prefix: `<SET_BY_OWNER>`
 - task-code-format: `<project-identifier>_<level1-task>-<assistant>-<employee>-<employee-task>`; numeric sequences start at zero
 - project-owner: human
+- work-language: zh-CN
 - default-record-model: `gpt-5.6-luna`
 - default-record-reasoning: `medium`
 - default-assistant-model: `gpt-5.6-terra`

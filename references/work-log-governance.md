@@ -2,6 +2,10 @@
 
 Only the `record` role writes `work_logs/`. A record is concise evidence for a durable event, not a transcript.
 
+## Work language and templates
+
+Read `work-language` from `rules/00-core-governance.md`. Its default is `zh-CN`. When it is `zh-CN`, use the corresponding `_CN` template for every record and write all narrative text, headings, event descriptions, evidence explanations, limitations, and next-state prose in Chinese. Keep stable metadata keys such as `record_type`, `task_code`, and `status` in English for structural validation. A non-Chinese owner-confirmed work language uses the matching template set when available; otherwise use the base template and write narrative text in the configured language.
+
 ## Event threshold
 
 Record only an owner-confirmed plan or dispatch, substantive audited delivery, correction/recovery trajectory, warning, error, stage completion, or audit outcome. Do not record routine coordination, raw conversation, unconfirmed ideas, or an employee's unverified self-report as a final result.

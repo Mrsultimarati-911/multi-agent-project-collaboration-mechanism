@@ -15,6 +15,7 @@ This project uses the Multi Agent Project Collaboration Mechanism. `AGENTS.md` a
 11. The first approved plan of every level-1 task must be recorded as a frozen `level1_plan` before any employee is created or a `level2_plan` is recorded. Material plan changes are appended by `record` to that plan's amendment ledger only after owner approval.
 12. Every employee requires its own frozen `level2_plan` before the employee conversation is created or instructed. It must cite the parent `level1_plan`; a changed objective or deliverable receives a new task code and plan rather than rewriting the original.
 13. `level2_results_mid` is the only append-only attempt ledger. Warning and error records remain after recovery; final results and summary/result records are new authoritative files, not renamed versions of prior records.
+14. `work-language` is configured in `rules/00-core-governance.md` and defaults to `zh-CN`. In Chinese projects, record uses `_CN` templates and all record narrative text is Chinese; stable metadata keys remain English.
 
 ## Project-specific rules
 

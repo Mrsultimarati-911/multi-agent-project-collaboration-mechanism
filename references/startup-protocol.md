@@ -8,15 +8,16 @@ Inspect the project root and create every missing standard Skill path immediatel
 
 ## 2. Ask for the initialization input
 
-Ask the owner for these five items in one concise initialization request:
+Ask the owner for these six items in one concise initialization request:
 
 1. **Project identifier — required.** It becomes the global task-code identifier. Monitor may offer one or more suggestions based on the project name, but only the owner may select or confirm it. Do not substitute `A` or any other value when the owner has not confirmed one.
 2. **Record default model and reasoning — optional.** Use `gpt-5.6-luna` / `medium` when omitted.
 3. **Assistant default model and reasoning — optional.** Use `gpt-5.6-terra` / `high` when omitted.
 4. **Employee default model and reasoning — optional.** Use `gpt-5.6-luna` / `high` when omitted.
 5. **Project-specific rules — optional.** An omitted answer means no additional rules at this time.
+6. **Work language — optional.** Use Chinese (`zh-CN`) when omitted. When Chinese is selected, all record narrative text is Chinese and record uses `_CN` templates.
 
-Do not create `assistant_00` until item 1 is owner-confirmed. Record defaults for omitted optional items in `rules/00-core-governance.md`.
+Do not create `assistant_00` until item 1 is owner-confirmed. Record defaults for omitted optional items, including `work-language: zh-CN`, in `rules/00-core-governance.md`.
 
 ## 3. Bootstrap assistant_00
 

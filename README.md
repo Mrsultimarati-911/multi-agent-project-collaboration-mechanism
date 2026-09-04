@@ -20,6 +20,8 @@ Every dispatched employee also has a frozen concrete `level2_plan`, linked to it
 
 The Skill supplies dedicated templates for append-only employee audit attempts, final results, summaries, warning/error recovery and pause records, assistant stage summaries, and record-generated stage results.
 
+Monitor also requests an optional project work language during initialization. It defaults to Chinese (`zh-CN`); Chinese projects use the supplied `_CN` record templates and Chinese narrative text, while stable metadata keys remain uniform for validation.
+
 ## Use
 
 Install the Skill into your Codex skills directory, then explicitly invoke:
