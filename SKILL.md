@@ -27,11 +27,15 @@ Read [roles and authority](references/roles-and-authority.md) before assigning a
 
 The first conversation of a governed project is normally `monitor`. It establishes the project-specific rules with the owner, inspects the project root for the mechanism layout, and routes all later agents through `AGENTS.md`.
 
-1. Confirm that the user is enabling this mechanism and identify the project root and task-code prefix.
+1. Confirm that the user is enabling this mechanism and identify the project root. Ask the owner for the global project identifier used in every task code, for example `QSV5` or `TLTK`; do not invent one.
 2. Read [project layout](references/project-layout.md) and inspect whether the required directories, `AGENTS.md`, and rules exist.
 3. If anything is missing, report the exact missing paths and request the owner's authorization before running `scripts/initialize_project.py` or creating anything.
 4. Ask the owner for project-specific rules or changes to the defaults. Write or update `AGENTS.md` and `rules/` only as the monitor and only from owner-confirmed content.
 5. Before substantive work, every agent reads `AGENTS.md` plus the applicable `rules/` files.
+
+### Change a project identifier
+
+Only the owner may request a task-code project-identifier change through `monitor`. When this occurs, monitor records the old-to-new mapping and effective decision in the rules, instructs `record` to update every already-effective identifier (including filenames, code fields, and internal references), and notifies every assistant before any further task is created or audited. This is a narrow owner-authorized exception to normal append-only record handling; do not apply it to any other historical fact.
 
 If the project already has an equivalent layout, preserve its content. Repair only missing mechanism files, never overwrite project material without explicit approval.
 
@@ -41,7 +45,7 @@ Before delegation, read [dispatch and audit](references/dispatch-and-audit.md). 
 
 After a delivery, the assistant verifies the stated evidence itself where feasible. It may recommend acceptance, correction, escalation, or an authorized integration; it cannot turn an unverified or unresolved delivery into a confirmed result.
 
-When creating an employee, use the model level explicitly specified by the owner. If none is specified, default to `gpt-5.6-luna` with `high` reasoning. The high-capability/low-cost split remains a recommended staffing pattern, not a replacement for owner authority.
+When creating an employee, use the model level explicitly specified by the owner. If none is specified, default to `gpt-5.6-luna` with `high` reasoning. Create `record` at `gpt-5.6-luna` with `medium` reasoning unless the owner changes that default through monitor. The high-capability/low-cost split remains a recommended staffing pattern, not a replacement for owner authority.
 
 ## Work records
 

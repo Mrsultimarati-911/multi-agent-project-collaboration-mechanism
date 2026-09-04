@@ -1,6 +1,6 @@
 # Employee task package
 
-- task_code: `P_<phase>-<assistant>-<employee>-<serial>`
+- task_code: `<project-identifier>_<level1-task>-<assistant>-<employee>-<employee-task>`
 - task_name:
 - dispatch_status: owner-approved
 - responsible_employee:

@@ -32,6 +32,10 @@ Every log contains: record type, code, task/stage name, responsible role, event 
 
 Warnings remain visible if they become errors. A correction is a new append or related record, never silent replacement of the earlier event.
 
+## Owner-authorized identifier change
+
+Task-code history is normally append-only. An owner-approved project-identifier change, recorded by monitor, is the sole exception: record updates the identifier in every effective log filename, `task_code` field, and internal record reference. It must not change any other historical fact. Monitor sends the same mapping to every assistant before new tasks or audit records use the new identifier.
+
 ## Validation boundary
 
 The validator can confirm names, fields, and references. It cannot prove an artifact's correctness or validate a claim that an agent has not independently audited.

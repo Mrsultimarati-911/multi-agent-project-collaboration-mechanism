@@ -36,6 +36,13 @@ def main() -> int:
         if not (root / "rules" / filename).is_file():
             errors.append(f"missing rule: rules/{filename}")
 
+    project_identifier = None
+    core_rule = root / "rules" / "00-core-governance.md"
+    if core_rule.is_file():
+        match = re.search(r"^\s*-\s*project-code-prefix:\s*`?([^`\s]+)`?\s*$", core_rule.read_text(encoding="utf-8", errors="replace"), re.MULTILINE)
+        if match and "<" not in match.group(1):
+            project_identifier = match.group(1)
+
     logs = root / "work_logs"
     if logs.is_dir():
         for path in sorted(logs.glob("*.md")):
@@ -46,6 +53,8 @@ def main() -> int:
             kind, code = match.groups()
             if kind.startswith("level2") and not TASK_CODE.fullmatch(code):
                 errors.append(f"invalid level2 task code in {path.name}")
+            elif kind.startswith("level2") and project_identifier and not code.startswith(f"{project_identifier}_"):
+                errors.append(f"project identifier mismatch in {path.name}: expected {project_identifier}_")
             missing = text_has_all(path, REQUIRED_LOG_FIELDS)
             if missing:
                 errors.append(f"missing fields in {path.name}: {', '.join(missing)}")
@@ -70,6 +79,8 @@ def main() -> int:
             candidate = code_line.split("task_code:", 1)[-1].strip().strip("`")
             if candidate and "<" not in candidate and not TASK_CODE.fullmatch(candidate):
                 errors.append(f"invalid task code in {path.relative_to(root)}")
+            elif candidate and "<" not in candidate and project_identifier and not candidate.startswith(f"{project_identifier}_"):
+                errors.append(f"project identifier mismatch in {path.relative_to(root)}: expected {project_identifier}_")
 
     for message in warnings:
         print(f"WARNING: {message}")

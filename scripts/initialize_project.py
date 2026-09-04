@@ -29,7 +29,7 @@ def copy_missing(source: Path, destination: Path, created: list[Path], skipped: 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("project_root", type=Path, help="existing project root")
-    parser.add_argument("--prefix", required=True, help="project task-code prefix, e.g. P or QSYS")
+    parser.add_argument("--prefix", required=True, help="owner-confirmed global task-code project identifier, e.g. QSV5 or TLTK")
     args = parser.parse_args()
     root = args.project_root.resolve()
     if not root.exists() or not root.is_dir():

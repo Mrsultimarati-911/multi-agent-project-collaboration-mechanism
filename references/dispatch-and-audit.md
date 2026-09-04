@@ -6,13 +6,13 @@ The assistant may propose a plan or task package, but only an explicit owner con
 
 ## Task code
 
-Use `P_<phase>-<assistant>-<employee>-<serial>`:
+Use `<project-identifier>_<level1-task>-<assistant>-<employee>-<employee-task>`:
 
 ```text
-P_01-00-003-0007
+QSV5_02-04-014-0008
 ```
 
-The prefix is set at project initialization and may be a project abbreviation. Phase, assistant, employee, and serial are zero-padded numeric identifiers. A parent stage may use `##` or `###` only in higher-level aggregate records; employee task records use concrete numeric codes.
+The project identifier is set by the owner during monitor initialization, is global to that project, and may be a concise identifier such as `QSV5` or `TLTK`. The four numeric segments are, in order: level-1 task (2 digits), assistant (2 digits), employee (3 digits), and employee task (4 digits); their sequences start at zero. A parent stage may use `#` only in higher-level aggregate records; employee task records always use concrete numeric codes. An owner may later change the identifier only through monitor; then record updates existing identifiers and monitor notifies all assistants before subsequent work.
 
 ## Required employee task package
 

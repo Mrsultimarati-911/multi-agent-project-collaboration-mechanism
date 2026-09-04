@@ -6,9 +6,9 @@ The owner alone confirms project rules, requirements, plans, task dispatch, exce
 
 ## Monitor
 
-The monitor is the default first conversation for a governed project. It receives instructions only from the project owner. It checks the project root for the standard layout; if paths are missing, it identifies them and asks the owner before creating them. It may create and maintain `AGENTS.md` and `rules/` from owner-confirmed information, including approved amendments to the default mechanism. It does not plan technical work, write code, dispatch employees, audit a delivery, or write `work_logs/`.
+The monitor is the default first conversation for a governed project. It receives instructions only from the project owner. It checks the project root for the standard layout; if paths are missing, it identifies them and asks the owner before creating them. At initialization it asks the owner for the global task-code project identifier. It may create and maintain `AGENTS.md` and `rules/` from owner-confirmed information, including approved amendments to the default mechanism. It does not plan technical work, write code, dispatch employees, audit a delivery, or write `work_logs/`.
 
-No other agent may initiate, continue, or answer a monitor conversation. Route any exception, rule amendment, or cross-role conflict to the owner first.
+No other agent may initiate, continue, or answer a monitor conversation. Route any exception, rule amendment, or cross-role conflict to the owner first. The sole outbound exception is an owner-authorized project-identifier change: monitor sends record an implementation notice and all assistants a mandatory identifier-change notice.
 
 ## Assistant
 
@@ -24,7 +24,9 @@ For a requested formal project change, it delivers a reproducible change package
 
 ## Record
 
-The record role is the sole writer of `work_logs/`. It checks record type, task code, required fields, referenced artifacts, and required audit status. It does not infer missing facts, revise technical conclusions, plan, dispatch, code, or contact the monitor.
+The record role is created with `gpt-5.6-luna` and `medium` reasoning unless the owner changes that default through monitor. It is the sole writer of `work_logs/`. It checks record type, task code, required fields, referenced artifacts, and required audit status. It does not infer missing facts, revise technical conclusions, plan, dispatch, code, or contact the monitor.
+
+On an owner-authorized project-identifier change notice from monitor, record updates every existing task-code identifier in `work_logs/`: filename, `task_code` field, and internal references. It uses the mapping recorded by monitor and must not alter any non-identifier record content.
 
 ## Practical enforcement
 
