@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import argparse
+import base64
+import hashlib
+import hmac
 import json
 import os
 import urllib.request
@@ -38,7 +41,13 @@ def main() -> int:
         ("推荐方案", event.get("recommendation", "")), ("记录", event.get("record_reference", "")),
     ]
     content = "【Multi-Agent Project · Owner Action Required】\n\n" + "\n\n".join(f"{key}：\n{value}" for key, value in fields) + "\n\n请进入项目对话处理。"
-    body = json.dumps({"msg_type": "text", "content": {"text": content}}, ensure_ascii=False).encode("utf-8")
+    payload = {"msg_type": "text", "content": {"text": content}}
+    secret = os.getenv("FEISHU_WEBHOOK_SECRET")
+    if secret:
+        timestamp = str(int(datetime.now(timezone.utc).timestamp()))
+        digest = hmac.new(b"", f"{timestamp}\n{secret}".encode("utf-8"), hashlib.sha256).digest()
+        payload.update({"timestamp": timestamp, "sign": base64.b64encode(digest).decode("utf-8")})
+    body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     try:
         request = urllib.request.Request(webhook, data=body, headers={"Content-Type": "application/json"})
         with urllib.request.urlopen(request, timeout=10) as response:
