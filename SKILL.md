@@ -27,11 +27,12 @@ Read [roles and authority](references/roles-and-authority.md) before assigning a
 
 The first conversation of a governed project is normally `monitor`. It establishes the project-specific rules with the owner, inspects the project root for the mechanism layout, and routes all later agents through `AGENTS.md`.
 
-1. Confirm that the user is enabling this mechanism and identify the project root. Ask the owner for the global project identifier used in every task code, for example `QSV5` or `TLTK`; do not invent one.
-2. Read [project layout](references/project-layout.md) and inspect whether the required directories, `AGENTS.md`, and rules exist.
-3. If anything is missing, report the exact missing paths and request the owner's authorization before running `scripts/initialize_project.py` or creating anything.
-4. Ask the owner for project-specific rules or changes to the defaults. Write or update `AGENTS.md` and `rules/` only as the monitor and only from owner-confirmed content.
-5. Before substantive work, every agent reads `AGENTS.md` plus the applicable `rules/` files.
+1. Confirm that the user is enabling this mechanism and identify the project root. Read [project layout](references/project-layout.md) and inspect whether the required directories, `AGENTS.md`, and rules exist.
+2. Create every missing standard path immediately with `scripts/initialize_project.py`; it is a startup exception and does not require a separate authorization. Never overwrite existing project content.
+3. Ask the owner for the following initialization values: required global task-code project identifier; optional `record`, `assistant`, and `employee` default model/reasoning; and optional project-specific rules. See [startup protocol](references/startup-protocol.md).
+4. The identifier must be explicitly supplied or confirmed by the owner. Monitor may propose a concise identifier based on the project name but must not choose one itself. For every optional item left unspecified, write the Skill default. Treat an omitted project-specific rule set as no additional project-specific rules.
+5. Write the initialization result to `AGENTS.md` and `rules/` only as monitor and only after the owner reply. Before substantive work, every agent reads `AGENTS.md` plus the applicable `rules/` files.
+6. After the required identifier is recorded, monitor creates `assistant_00` using the configured assistant default and sends it the startup task in `assets/templates/root/templates/ASSISTANT_00_STARTUP.md`. This narrow bootstrap exception does not authorize monitor to create any other assistant or employee.
 
 ### Change a project identifier
 
@@ -45,7 +46,7 @@ Before delegation, read [dispatch and audit](references/dispatch-and-audit.md). 
 
 After a delivery, the assistant verifies the stated evidence itself where feasible. It may recommend acceptance, correction, escalation, or an authorized integration; it cannot turn an unverified or unresolved delivery into a confirmed result.
 
-When creating an employee, use the model level explicitly specified by the owner. If none is specified, default to `gpt-5.6-luna` with `high` reasoning. Create `record` at `gpt-5.6-luna` with `medium` reasoning unless the owner changes that default through monitor. The high-capability/low-cost split remains a recommended staffing pattern, not a replacement for owner authority.
+Use the owner-confirmed project defaults when creating `assistant`, `employee`, and `record`, unless the owner explicitly overrides a single creation. Skill defaults are: `assistant` = `gpt-5.6-terra` / `high`; `employee` = `gpt-5.6-luna` / `high`; `record` = `gpt-5.6-luna` / `medium`. The high-capability/low-cost split remains a recommended staffing pattern, not a replacement for owner authority.
 
 ## Work records
 
@@ -63,6 +64,6 @@ Run validation after initialization and before treating a record package as stru
 ## Boundaries
 
 - A Skill is a workflow instruction, not an operating-system permission boundary. If hard enforcement is required, add appropriate repository or filesystem controls separately.
-- Do not automatically create conversations, dispatch employees, alter production assets, or accept a delivery.
+- Do not automatically create conversations, dispatch employees, alter production assets, or accept a delivery, except for monitor's one-time creation of `assistant_00` after the owner completes required initialization.
 - `monitor` only accepts direct owner instructions. Other agents escalate exceptions, rule changes, and cross-role conflicts to the owner, not to the monitor.
 - Do not add project-specific facts, model names, secrets, private data, or domain-specific implementation rules to this Skill.

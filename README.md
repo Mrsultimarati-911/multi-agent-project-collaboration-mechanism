@@ -10,7 +10,7 @@ It separates decision-making, planning, execution, governance, and durable recor
 - employee: performs one bounded task in an isolated workspace and requests assistant audit when complete;
 - record: validates and writes auditable work logs only.
 
-The Skill provides a standard project layout (including `raw_data/`), `AGENTS.md` and rule templates, two-level work-log conventions, bounded task-package templates, and optional initialization and read-only validation scripts. Monitor requests an owner-defined global task identifier (for example `QSV5` or `TLTK`) during initialization; it is used in every task code and may later be changed only through an owner-authorized monitor-to-record migration plus assistant notification. The default employee configuration is GPT-5.6 Luna with high reasoning; the default record configuration is GPT-5.6 Luna with medium reasoning. Defaults may be amended only by the owner through `monitor`.
+The Skill provides a standard project layout (including `raw_data/`), `AGENTS.md` and rule templates, two-level work-log conventions, bounded task-package templates, and optional initialization and read-only validation scripts. Monitor directly creates missing standard paths, then requests an owner-confirmed global task identifier (for example `QSV5` or `TLTK`), optional role defaults, and optional project-specific rules. It may propose but never self-assign the identifier. It then creates `assistant_00` for initial project familiarization and requirement alignment. The defaults are GPT-5.6 Terra/high for assistant, GPT-5.6 Luna/high for employee, and GPT-5.6 Luna/medium for record. Defaults may be amended only by the owner through `monitor`.
 
 ## Use
 

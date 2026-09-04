@@ -29,12 +29,12 @@ def copy_missing(source: Path, destination: Path, created: list[Path], skipped: 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("project_root", type=Path, help="existing project root")
-    parser.add_argument("--prefix", required=True, help="owner-confirmed global task-code project identifier, e.g. QSV5 or TLTK")
+    parser.add_argument("--prefix", help="owner-confirmed global task-code project identifier, e.g. QSV5 or TLTK")
     args = parser.parse_args()
     root = args.project_root.resolve()
     if not root.exists() or not root.is_dir():
         parser.error("project_root must be an existing directory")
-    if not args.prefix.replace("_", "").isalnum():
+    if args.prefix and not args.prefix.replace("_", "").isalnum():
         parser.error("--prefix may contain only letters, digits, and underscores")
 
     created: list[Path] = []
@@ -55,7 +55,7 @@ def main() -> int:
     )
 
     core_rule = root / "rules" / "00-core-governance.md"
-    if core_rule in created and "<SET_BY_OWNER>" in core_rule.read_text(encoding="utf-8"):
+    if args.prefix and core_rule in created and "<SET_BY_OWNER>" in core_rule.read_text(encoding="utf-8"):
         core_rule.write_text(
             core_rule.read_text(encoding="utf-8").replace("<SET_BY_OWNER>", args.prefix),
             encoding="utf-8",
