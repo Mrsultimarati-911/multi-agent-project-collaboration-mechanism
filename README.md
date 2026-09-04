@@ -1,39 +1,39 @@
-# Multi Agent Project Collaboration Mechanism
+# 多智能体项目协作机制
 
-An explicit-only Codex Skill for human-led, auditable multi-agent projects.
+这是一个仅可显式调用的 Codex Skill，用于由人类负责人主导、全程可审计的多智能体项目。
 
-It separates decision-making, planning, execution, governance, and durable records into five roles:
+它将决策、规划、执行、治理和可追溯记录分为五类角色：
 
-- human project owner: approvals, decisions, exceptions, and final acceptance;
-- monitor: the default first project conversation; checks the layout, obtains authorization before creating missing paths, and maintains owner-confirmed rules;
-- assistant: plans, dispatches approved work, and audits deliveries;
-- employee: performs one bounded task in an isolated workspace and requests assistant audit when complete;
-- record: validates and writes auditable work logs only.
+- 人类项目负责人：审批、决策、例外处理与最终验收；
+- `monitor`：默认的项目首个对话；检查目录结构、创建缺失的标准路径，并维护负责人确认的规则；
+- `assistant`：规划、派发已批准工作，并审核交付；
+- `employee`：在隔离工作区完成一个边界明确的任务，结束后请求 assistant 审核；
+- `record`：仅负责校验和写入可审计的工作记录。
 
-The Skill provides a standard project layout (including `raw_data/`), `AGENTS.md` and rule templates, two-level work-log conventions, bounded task-package templates, and optional initialization and read-only validation scripts. Monitor directly creates missing standard paths, then requests an owner-confirmed global task identifier (for example `QSV5` or `TLTK`), optional role defaults, and optional project-specific rules. It may propose but never self-assign the identifier. It then creates `record|工作记录` and `assistant_00` for governed logging and initial project familiarization. Employees may submit only their own assistant-audited `level2_summary` directly to record; record remains the sole `work_logs/` writer. The defaults are GPT-5.6 Terra/high for assistant, GPT-5.6 Luna/high for employee, and GPT-5.6 Luna/medium for record. Defaults may be amended only by the owner through `monitor`.
+Skill 提供标准项目目录（含 `raw_data/`）、`AGENTS.md` 与规则模板、两级工作记录约定、边界明确的任务包模板，以及可选的初始化和只读校验脚本。`monitor` 会直接创建缺失的标准路径，随后向负责人索取经确认的全局任务标识（例如 `QSV5` 或 `TLTK`）、可选的角色默认配置、工作语言和项目特色规则。它可以提出任务标识建议，但绝不自行设定。初始化后，它会创建 `record|工作记录` 和 `assistant_00`，分别用于受控记录与项目初始熟悉。employee 仅可将其经 assistant 审核通过的 `level2_summary` 直接提交给 record；`record` 始终是 `work_logs/` 的唯一写入者。默认智能水平为：assistant 使用 GPT-5.6 Terra/high，employee 使用 GPT-5.6 Luna/high，record 使用 GPT-5.6 Luna/medium；只有负责人可通过 `monitor` 修改这些默认值。
 
-Before every assistant plan, action decision, or employee dispatch request, the Skill automatically applies a four-quadrant alignment review: confirmed shared context; material owner-context gaps; agent-supplied knowledge, risks, and alternatives; and jointly unknown items converted into testable assumptions. It asks no questions when context is sufficient and never asks more than ten material alignment questions.
+每次 assistant 准备制定计划、形成行动决策或派发 employee 前，Skill 会自动应用四象限需求对齐：已确认的共同信息、负责人已知但 agent 未知的关键缺口、agent 可补充的知识/风险/替代方案，以及双方共同未知且应转化为可验证假设的问题。信息充分时不会重复提问，关键对齐问题最多十个。
 
-Every approved stage begins with a frozen `level1_plan` contract before any employee dispatch. It captures authorization evidence, scope, acceptance, alignment, delegation, validation, and escalation; later material owner-approved changes are appended to its amendment ledger rather than silently rewriting history.
+每个获批准的阶段，在任何 employee 派发之前都必须先建立冻结的 `level1_plan` 契约。它记录授权证据、范围、验收、对齐、委派、验证和升级机制；后续获得负责人批准的实质变更会追加到变更台账，而不是悄然重写历史。
 
-Every dispatched employee also has a frozen concrete `level2_plan`, linked to its level-1 plan and followed by an operational task package. Material revisions are appended only with owner approval; a changed objective or deliverable receives a new task code.
+每个被派发的 employee 还必须拥有冻结的、关联 level1 计划的具体 `level2_plan`，随后再获得可执行的任务包。实质修订仅能在负责人批准后追加；目标或交付物发生变化时，必须创建新的任务码。
 
-The Skill supplies dedicated templates for append-only employee audit attempts, final results, summaries, warning/error recovery and pause records, assistant stage summaries, and record-generated stage results.
+Skill 提供专用模板，用于追加式的 employee 审核尝试记录、最终结果、摘要、警告/错误恢复与暂停记录、assistant 阶段摘要，以及由 record 生成的阶段结果。
 
-Monitor also requests an optional project work language during initialization. It defaults to Chinese (`zh-CN`); Chinese projects use the supplied `_CN` record templates and Chinese narrative text, while stable metadata keys remain uniform for validation.
+初始化时，`monitor` 还会询问可选的项目工作语言，默认中文（`zh-CN`）。中文项目使用随 Skill 提供的 `_CN` 记录模板，所有叙述性文本均为中文；用于校验的稳定元数据键名保持统一。
 
-## Use
+## 使用方式
 
-Install the Skill into your Codex skills directory, then explicitly invoke:
+将 Skill 安装到 Codex skills 目录后，显式调用：
 
 ```text
 $multi-agent-project-collaboration-mechanism
 ```
 
-or tell Codex that a project is enabling this mechanism. The Skill deliberately does not activate implicitly.
+或直接告诉 Codex：项目要启用该协作机制。Skill 不会隐式自动启用。
 
-For long-lived project facts, requirements, and architecture context, use it alongside a project-context system such as `my-context-manage`.
+对于项目长期事实、需求与架构上下文，建议与 `my-context-manage` 等项目上下文系统配合使用。
 
-## License
+## 许可证
 
 [MIT](LICENSE)

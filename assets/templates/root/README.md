@@ -1,6 +1,6 @@
-# Root mechanism tools
+# 根目录机制工具
 
-This directory contains project-local tools and templates installed by the Multi Agent Project Collaboration Mechanism. It is not a delivery workspace or production source directory.
+此目录保存由“多智能体项目协作机制”安装到项目内的本地工具和模板。它不是交付工作区，也不是生产源码目录。
 
-- `validate_project_governance.py` performs read-only structural checks.
-- `templates/` contains task-package and work-log source templates.
+- `validate_project_governance.py`：执行只读的目录与治理结构校验。
+- `templates/`：保存任务包和工作记录的源模板。
