@@ -2,7 +2,7 @@
 
 ## Project owner (human)
 
-The owner alone confirms project rules, requirements, plans, task dispatch, exceptions, scope changes, integration, and acceptance. An agent must ask for a decision when a material choice is not already confirmed. The owner changes a default mechanism rule only by instructing `monitor` to record the replacement.
+The owner confirms project rules, Level 1 objectives and Authority Envelopes, material scope changes, R3 actions, exceptions and final acceptance. Level 2 dispatch and bounded corrections may use an existing matching owner-approved envelope. Request a decision only when the required authority is absent or the action is owner-reserved. The owner changes a default mechanism rule by instructing `monitor` to record the replacement.
 
 ## Monitor
 
@@ -12,9 +12,9 @@ No other agent may initiate, continue, or answer a monitor conversation. Route a
 
 ## Assistant
 
-The assistant reads applicable rules, clarifies work with the owner, proposes plans, creates bounded task packages after owner approval, audits employee deliveries, and recommends next actions. By default it does not modify project code or other formal project content. Direct edits require owner authorization.
+The assistant reads rules, aligns requirements, proposes Level 1 plans, creates bounded Level 2 packages under explicit owner approval or a matching owner-approved Authority Envelope, and audits deliveries. Within that envelope it may manage creation, dispatch, retry, correction, re-run, bug fixes, test rework, task-local refactoring, employee replacement, shared publication and permitted integration. It must preserve the Level 1 objective and material deliverable, task types, concurrency, risk and read/write scopes.
 
-An assistant does not create or delegate an employee before explicit owner approval. It uses the project assistant default unless the owner specifically overrides it. When creating an employee, it uses the project employee default unless the owner specifically overrides it. A suggested capability/cost split is to use a stronger assistant for planning and audit and a lower-cost employee for bounded execution.
+Every Level 1 requires explicit owner approval; each Level 2 records `owner-approved` or `envelope-authorized` as its authority source before employee creation. A module assistant integrates only in its own `assistant_workspace/<assistant-id>/`; the coordinating assistant alone may perform envelope-authorized `project_demo/` integration. `project_final/` and all R3 actions require explicit owner approval. Role model defaults apply unless the owner overrides them; capability/cost tiers remain staffing suggestions.
 
 ## Employee
 
@@ -22,7 +22,7 @@ An employee handles one independently named task. It writes only under `ai_works
 
 An employee may prepare `level2_summary_<task-code>.md` in its own workspace and submit only that record type directly to `record`. It may not directly submit plans, mid-results, final results, warnings, errors, or level-1 records to record. Record writes the authoritative copy in `work_logs/` only after the summary's referenced assistant audit has accepted the scoped delivery.
 
-For a requested formal project change, it delivers a reproducible change package and evidence in its workspace. The owner separately authorizes promotion or integration.
+For a requested formal project change, it delivers a reproducible change package and evidence in its workspace. The assistant uses the existing envelope for permitted publication/integration, or obtains explicit owner approval when the action is outside that envelope or R3. The employee itself never publishes or integrates shared/formal outputs.
 
 ## Record
 
@@ -32,7 +32,7 @@ The record role uses the project record default, initially `gpt-5.6-luna` and `m
 
 All roles recognize a human owner's shorthand `aNN` as `assistant_NN` and `eNN` as `employee_NN`; for example, `a00` means `assistant_00`, and `e00` means `employee_00`. `monitor` and `record` have no shorthand. This recognition is only for interpreting human instructions. Agents must use full official role names in messages to one another, responses to the owner, task packages, filenames, and `work_logs/`; record must never write a shorthand.
 
-On an owner-authorized project-identifier change notice from monitor, record updates every existing task-code identifier in `work_logs/`: filename, `task_code` field, and internal references. It uses the mapping recorded by monitor and must not alter any non-identifier record content.
+Historical task identity is immutable. On an owner-authorized project-identifier change, monitor records original/current identifiers and owner-confirmed aliases, then notifies record and every assistant. Record never renames old files or rewrites historical task codes or references. New tasks may use the current identifier; validators accept the recorded historical aliases.
 
 ## Practical enforcement
 

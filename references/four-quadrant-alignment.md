@@ -30,4 +30,4 @@ Before requesting dispatch approval, summarize only material findings in the pla
 - risks, corrections, and alternatives;
 - testable assumptions or minimum experiments.
 
-This review does not replace the owner's approval gate. It makes that approval decision better informed.
+This review does not grant authority. Level 1 remains owner-approved; Level 2 may use explicit approval or the existing matching Authority Envelope. Do not turn sufficient information or an already-authorized correction into a repeated owner approval gate.

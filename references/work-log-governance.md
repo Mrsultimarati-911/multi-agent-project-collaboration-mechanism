@@ -4,32 +4,32 @@ Only the `record` role writes `work_logs/`. A record is concise evidence for a d
 
 ## Work language and templates
 
-Read `work-language` from `rules/00-core-governance.md`. Its default is `zh-CN`. When it is `zh-CN`, use the corresponding `_CN` template for every record and write all narrative text, headings, event descriptions, evidence explanations, limitations, and next-state prose in Chinese. Keep stable metadata keys such as `record_type`, `task_code`, and `status` in English for structural validation. A non-Chinese owner-confirmed work language uses the matching template set when available; otherwise use the base template and write narrative text in the configured language.
+Read `work-language` from `rules/00-core-governance.md`, default `zh-CN`. Chinese projects use `_CN` templates and Chinese narrative, evidence explanations, limitations and next-state prose. Stable schema keys remain English. Other configured languages use their matching template, or the base template with translated narrative. Templates contain JSON event payloads for record to complete; only the engine generates Markdown front matter.
 
 ## Event threshold
 
-Record only an owner-confirmed plan or dispatch, substantive audited delivery, correction/recovery trajectory, warning, error, stage completion, or audit outcome. Do not record routine coordination, raw conversation, unconfirmed ideas, or an employee's unverified self-report as a final result.
+Record owner-approved Level 1 plans, owner-approved or envelope-authorized Level 2 plans, execution transitions, audited deliveries, correction/recovery, warnings/errors and stage outcomes. Do not record raw conversation or treat employee self-reports as accepted results.
 
 ## Level-1 plan contract
 
 Create `level1_plan_<project>_<level1>-##-###-####.md` only after explicit owner approval and before the first `level2_plan` or employee dispatch in that level-1 task. It is a frozen action contract, not a discussion transcript. Use [level-1 plan record](level1-plan-record.md) for its required content.
 
-After the initial freeze, record alone may append a material change to the plan's amendment ledger. It must retain the prior baseline and include the owner approval, reason, impact, and linked replacement records. Do not silently edit the baseline sections or delete a previous plan decision.
+After initial freeze, narrative amendment events may preserve reasons and decisions but never mutate the plan's executable authority. Material changes require an owner-approved new plan/stage identity with `supersedes_reference`, retaining the old baseline and evidence. Supersession does not cancel old state; perform legal state transitions separately.
 
 ## Level-2 plan contract
 
-Create `level2_plan_<project>_<level1>-<assistant>-<employee>-<employee-task>.md` only after explicit owner approval to dispatch that employee and before the employee conversation is created or given instructions. It must cite an existing `level1_plan` and use the concrete task code, never `#`. It fixes the employee identity, allowed read/write scope, objective, expected deliverable, audit evidence, escalation conditions, and delivery route. Use [level-2 plan record](level2-plan-record.md) for required content.
+Create `level2_plan_<project>_<level1>-<assistant>-<employee>-<employee-task>.md` before employee creation, with `dispatch_authority` equal to `owner-approved` or `envelope-authorized` and the corresponding evidence/reference. It cites the owner-approved `level1_plan`, uses a concrete code, and fixes employee identity, scopes, objective, deliverable, audit evidence, escalation and delivery route. See [level-2 plan record](level2-plan-record.md).
 
-For the same task identity, record alone may append an owner-approved material dispatch change to the plan's amendment ledger. A changed objective or new deliverable is a new employee task: allocate a new employee-task serial and create a new `level2_plan`; do not disguise it as a revision of the old task.
+For the same task identity, record appends execution/correction evidence; bounded corrections remain autonomous. Frozen scopes, dependencies and authority do not change through narrative. A changed task contract gets a new code/plan and `supersedes_reference`, using existing envelope authority when applicable; beyond-envelope or Level 1 material changes require owner approval. No generic in-place plan amendment mechanism is provided.
 
 ## Levels and filenames
 
 Level 1 represents an owner-approved project stage or assistant-level initiative:
 
 - `level1_plan_<aggregate-code>.md`
-- `level1_summary_<aggregate-code>.md`
-- `level1_warning_<aggregate-code>.md`
-- `level1_error_<aggregate-code>.md`
+- `level1_summary_<assistant-scope-code>.md`
+- `level1_warning_<assistant-scope-code>.md`
+- `level1_error_<assistant-scope-code>.md`
 - `level1_results_<aggregate-code>.md`
 
 Level 2 represents one employee task:
@@ -47,7 +47,9 @@ Only the responsible employee may directly submit a `level2_summary` to record. 
 
 ## Required content
 
-Every log contains: record type, code, task/stage name, responsible role, event date, status, source/parent references, a concise factual event description, evidence paths or commands, limitations, and next state. Result records also state whether the evidence is final, scoped, unresolved, rejected, or requires owner action.
+Every record follows `root/governance_schema.py`. A caller submits a JSON event with `requested_status`, required type-specific fields, references and narrative. The engine creates `record_status: final` (recorded, not owner-accepted), `execution_status` (the task/stage state), and `plan_status: frozen` on plans. It supplies event identity, sequence, date and hash-chain metadata. There is no generic `status` combining approval, record finality and execution.
+
+Level 1 states are `planned`, `active`, `paused`, `failed`, `accepted`, `closed`, `cancelled`. Level 2 states are `planned`, `dispatched`, `running`, `submitted`, `audited`, `accepted`, `integrated`, `closed`, `paused`, `failed`, `cancelled`. Normal task transitions run planned → dispatched → running → submitted → audited → accepted; rejected audits return to bounded rework before resubmission. The engine restores current state from recorded history. Optional `expected_previous_status` is only an assertion; callers cannot select the authoritative prior state. Dependencies must reach their required consumable state, not merely exist.
 
 Use [remaining work-record types](remaining-work-record-types.md) for the required templates and transitions of `level2_results_mid`, `level2_results`, both warning/error levels, both summary levels, and `level1_results`.
 
@@ -55,8 +57,8 @@ Warnings remain visible if they become errors. A correction is a new append or r
 
 ## Owner-authorized identifier change
 
-Task-code history is normally append-only. An owner-approved project-identifier change, recorded by monitor, is the sole exception: record updates the identifier in every effective log filename, `task_code` field, and internal record reference. It must not change any other historical fact. Monitor sends the same mapping to every assistant before new tasks or audit records use the new identifier.
+Historical task identity is immutable, including after an owner-approved rename. Monitor records `original-project-identifier`, the current identifier and owner-confirmed `project-identifier-aliases`; record never renames historical logs or rewrites task codes/references. Existing tasks keep their original code, while new tasks may use the current identifier. The validator accepts the original, current and confirmed alias identifiers. Monitor notifies every assistant before new task allocation.
 
 ## Validation boundary
 
-V2 adds `record_engine.py`, which deterministically checks structured event fields, allowed status transitions, artifact manifests, dependencies and append-only destinations before a record is written. The validator and engine cannot prove an artifact's correctness or validate a claim that an agent has not independently audited.
+Engine and validator share the canonical schema, typed task-code patterns and history reader. The engine rejects invalid transitions, missing/incorrect plan or audit chains, unsatisfied dependencies and path escapes. A final `level2_results` requires a real matching plan, submission and accepted assistant audit; a field saying "accepted" alone is insufficient. New manifests are `manifest.json`; legacy JSON stored as `manifest.yaml` remains readable. V1 records are read-only legacy sources; missing V2 features are warnings for governance version 1. Schema/provenance checks do not prove technical correctness.

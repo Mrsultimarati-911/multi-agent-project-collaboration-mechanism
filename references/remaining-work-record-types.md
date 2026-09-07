@@ -2,9 +2,9 @@
 
 ## Execution and finalization
 
-- `level2_results_mid`: record creates it on the employee's first auditable delivery after assistant submission. Each later delivery, audit verdict, correction request, and rework is appended as a new attempt. Never overwrite an attempt.
+- `level2_results_mid`: records dispatched/running/submitted/audited and later permitted execution events submitted through the assistant. Each transition is a separate engine event. Deliveries and audits share an attempt number; rework increases it. Audit status is `not_requested`, `pending`, `accepted` or `rejected`; only an `audited` event may accept delivery. Never overwrite earlier events.
 - `level2_results`: record creates it only when an assistant accepts the scoped delivery in its mid record. It cites the accepted attempt and contains final deliverables, validation evidence, scope, and limitations.
-- `level2_summary`: only the responsible employee submits it directly to record after final acceptance. It cites the final result and audit. Record remains the sole `work_logs/` writer.
+- `level2_summary`: only the responsible employee may use the direct employee-to-record route, after scoped assistant acceptance and the final result. It cites that result's same audit; stage owner acceptance is a separate later gate. Record remains the sole `work_logs/` writer and invokes the engine.
 
 ## Exceptions
 
@@ -17,5 +17,7 @@ Warnings and errors are immutable evidence. Later recovery links to them; it nev
 
 ## Stage close
 
-- `level1_summary`: each participating assistant records its own assistant-scoped completion account after the stage is complete. Use code `<project>_<level1>-<assistant>-###-####`.
+- `level1_summary`: a participating assistant records scoped stage activation, progress or completion evidence using `<project>_<level1>-<assistant>-###-####`. It may report an already accepted stage but cannot establish initial owner acceptance; that transition requires `level1_results` with owner evidence.
 - `level1_results`: record creates the aggregate stage result only after owner acceptance, from the level-1 summaries and accepted level-2 results. Use aggregate code `<project>_<level1>-##-###-####`. Record condenses supplied facts; it does not invent a technical conclusion.
+
+Every template supplies a JSON event, not front matter to copy into a log. The shared canonical schema defines its required fields and allowed states; the engine supplies timestamps, record finality and hash-chain metadata. Type names, task-code shape, actual history, accepted audit links and dependency readiness are validated together.

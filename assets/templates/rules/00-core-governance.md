@@ -19,7 +19,7 @@
 - authority-envelope: owner-approved level1 boundary required for auto-dispatch, shared publishing, or integration
 - default-risk-tiers: R0 autonomous read/test; R1 assistant-managed workspace correction; R2 only within authority envelope; R3 owner explicit approval
 - notifications: { enabled: true, channels: [feishu], owner-intervention-only: true }
-- feishu-notifications: enabled-by-default; owner may disable during monitor initialization; configuration path is root/notifications/feishu_config.json
+- feishu-notifications: enabled-by-default; persisted startup choice; optional root/notifications/feishu_config.json contains only enabled; credentials environment-only
 
 ## Owner-confirmed project-specific rules
 
