@@ -1,162 +1,108 @@
 #!/usr/bin/env python3
-"""Read-only structural validator for a governed multi-agent project."""
+"""Read-only V1 compatibility and strict canonical V2 governance verification."""
 from __future__ import annotations
-
 import argparse
-import re
-import sys
+import json
 from pathlib import Path
-
-
-V1_REQUIRED_DIRS = ("root", "rules", "ai_workspace", "work_logs", "draft", "plan", "project_demo", "project_final", "raw_data")
-V2_REQUIRED_DIRS = ("common_data", "common_artifacts", "assistant_workspace", "plan/interfaces")
-TASK_CODE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*_\d{2}-\d{2}-\d{3}-\d{4}$")
-LEVEL1_PLAN_CODE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*_\d{2}-##-###-####$")
-LEVEL1_ASSISTANT_CODE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*_\d{2}-\d{2}-###-####$")
-LOG_NAME = re.compile(r"^(level[12]_(?:results_mid|results|plan|summary|warning|error))_(.+)\.md$")
-REQUIRED_LOG_FIELDS = ("record_type:", "task_code:", "task_name:", "responsible_role:", "event_date:", "status:")
-REQUIRED_TASK_FIELDS = ("task_code:", "task_name:", "dispatch_status:", "responsible_employee:", "allowed_reads:", "allowed_writes:")
-REQUIRED_LEVEL1_PLAN_FIELDS = (
-    "project_identifier:", "accountable_assistant:", "owner_approval_date:",
-    "owner_approval_evidence:", "plan_status:", "frozen_at:", "frozen_by:",
+from governance_schema import (
+    V1_DIRS, V2_DIRS, contained_path, load_history, read_project_config,
+    replay_history, validate_dag, validate_interface, validate_workstreams,
 )
-REQUIRED_LEVEL2_PLAN_FIELDS = (
-    "responsible_assistant:", "responsible_employee:", "level1_plan_reference:",
-    "owner_dispatch_approval_date:", "owner_dispatch_approval_evidence:",
-    "employee_model:", "employee_reasoning:", "workspace:", "plan_status:",
-)
-REQUIRED_FIELDS_BY_RECORD_TYPE = {
-    "level2_results_mid": ("level2_plan_reference:", "attempt_number:", "submission_timestamp:", "employee_delivery_reference:", "assistant_audit_status:"),
-    "level2_results": ("level2_plan_reference:", "level2_results_mid_reference:", "assistant_audit_reference:", "assistant_audit_status:", "final_completion_timestamp:"),
-    "level2_summary": ("assistant_audit_reference:", "level2_results_reference:"),
-    "level2_warning": ("level2_plan_reference:", "interruption_detected_at:", "recovery_owner:", "recovery_plan:", "resumption_condition:"),
-    "level2_error": ("level2_plan_reference:", "interruption_detected_at:", "direct_error_evidence:", "owner_intervention_required:", "paused_scope:"),
-    "level1_warning": ("level1_plan_reference:", "interruption_detected_at:", "recovery_owner:", "recovery_plan:", "affected_scope:"),
-    "level1_error": ("level1_plan_reference:", "interruption_detected_at:", "direct_error_evidence:", "owner_decision_required:", "all_paused_employees:"),
-    "level1_summary": ("level1_plan_reference:", "participating_assistant:", "completion_assessment:", "audit_evidence:", "exception_references:"),
-    "level1_results": ("level1_plan_reference:", "source_level1_summaries:", "source_level2_results:", "owner_acceptance_reference:", "reusable_outputs:"),
-}
+from artifact_support import validate_manifest
 
 
-def text_has_all(path: Path, fields: tuple[str, ...]) -> list[str]:
-    text = path.read_text(encoding="utf-8", errors="replace")
-    return [field for field in fields if field not in text]
-
-
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("project_root", type=Path)
-    args = parser.parse_args()
-    root = args.project_root.resolve()
-    errors: list[str] = []
-    warnings: list[str] = []
-    if not (root / "AGENTS.md").is_file():
-        errors.append("missing AGENTS.md")
-    core_text = ""
-    core_rule = root / "rules" / "00-core-governance.md"
-    if core_rule.is_file():
-        core_text = core_rule.read_text(encoding="utf-8", errors="replace")
-    version_match = re.search(r"^\s*-\s*governance-version:\s*`?(\d+)`?\s*$", core_text, re.MULTILINE)
-    governance_version = int(version_match.group(1)) if version_match else 1
-    for directory in V1_REQUIRED_DIRS:
-        if not (root / directory).is_dir():
-            errors.append(f"missing directory: {directory}/")
-    for directory in V2_REQUIRED_DIRS:
-        if not (root / directory).is_dir():
-            (errors if governance_version >= 2 else warnings).append(f"missing V2 directory: {directory}/")
-    for filename in ("00-core-governance.md", "01-role-and-filesystem.md", "02-work-log-governance.md"):
-        if not (root / "rules" / filename).is_file():
-            errors.append(f"missing rule: rules/{filename}")
-
-    project_identifier = None
-    if core_rule.is_file():
-        match = re.search(r"^\s*-\s*project-code-prefix:\s*`?([^`\s]+)`?\s*$", core_text, re.MULTILINE)
-        if match and "<" not in match.group(1):
-            project_identifier = match.group(1)
-
-    logs = root / "work_logs"
-    if logs.is_dir():
-        for path in sorted(logs.glob("*.md")):
-            match = LOG_NAME.match(path.name)
-            if not match:
-                warnings.append(f"unrecognized log filename: work_logs/{path.name}")
+def validate_project(project_root: Path) -> tuple[list[str], list[str]]:
+    root = Path(project_root).resolve()
+    errors, warnings = [], []
+    if not root.is_dir():
+        return ['project root does not exist'], warnings
+    try:
+        config = read_project_config(root)
+    except (ValueError, OSError) as exc:
+        return [f'governance config: {exc}'], warnings
+    version = config['governance_version']
+    if version not in (1, 2):
+        errors.append('unsupported governance-version')
+    for directory in V1_DIRS + V2_DIRS:
+        try:
+            target = contained_path(root, directory)
+            if not target.is_dir():
+                (warnings if version == 1 and directory in V2_DIRS else errors).append('missing directory: ' + directory)
+        except ValueError as exc:
+            errors.append(f'{directory}: {exc}')
+    for relative in ('AGENTS.md', 'rules/00-core-governance.md', 'rules/01-role-and-filesystem.md', 'rules/02-work-log-governance.md'):
+        try:
+            if not contained_path(root, relative).is_file():
+                errors.append('missing file: ' + relative)
+        except ValueError as exc:
+            errors.append(f'{relative}: {exc}')
+    try:
+        events, legacy = load_history(root)
+        warnings.extend(legacy)
+    except (ValueError, OSError, TypeError, KeyError) as exc:
+        return errors + [f'history: {exc}'], warnings
+    try:
+        # Whole-graph checks catch cycles even before replaying individual records.
+        validate_dag({e['task_code']: e.get('depends_on', []) for e in events if e['record_type'] == 'level2_plan'})
+        for event in events:
+            if event['record_type'] == 'level1_plan':
+                validate_workstreams(event)
+        replay_history(root, events)
+    except (ValueError, OSError, TypeError, KeyError) as exc:
+        errors.append(f'governance: {exc}')
+    for kind in ('common_data', 'common_artifacts'):
+        try:
+            directory = contained_path(root, kind)
+            if not directory.is_dir():
                 continue
-            kind, code = match.groups()
-            if kind.startswith("level2") and not TASK_CODE.fullmatch(code):
-                errors.append(f"invalid level2 task code in {path.name}")
-            elif kind.startswith("level2") and project_identifier and not code.startswith(f"{project_identifier}_"):
-                errors.append(f"project identifier mismatch in {path.name}: expected {project_identifier}_")
-            if kind == "level1_plan":
-                if not LEVEL1_PLAN_CODE.fullmatch(code):
-                    errors.append(f"invalid level1 aggregate task code in {path.name}")
-                elif project_identifier and not code.startswith(f"{project_identifier}_"):
-                    errors.append(f"project identifier mismatch in {path.name}: expected {project_identifier}_")
-            missing = text_has_all(path, REQUIRED_LOG_FIELDS)
-            if missing:
-                errors.append(f"missing fields in {path.name}: {', '.join(missing)}")
-            if kind == "level1_plan":
-                plan_missing = text_has_all(path, REQUIRED_LEVEL1_PLAN_FIELDS)
-                if plan_missing:
-                    errors.append(f"level1 plan missing contract fields in {path.name}: {', '.join(plan_missing)}")
-            if kind == "level2_plan":
-                plan_missing = text_has_all(path, REQUIRED_LEVEL2_PLAN_FIELDS)
-                if plan_missing:
-                    errors.append(f"level2 plan missing contract fields in {path.name}: {', '.join(plan_missing)}")
-            if kind == "level2_results" and "assistant_audit_status:" not in path.read_text(encoding="utf-8", errors="replace"):
-                errors.append(f"final result lacks assistant_audit_status: {path.name}")
-            required = REQUIRED_FIELDS_BY_RECORD_TYPE.get(kind)
-            if required:
-                record_missing = text_has_all(path, required)
-                if record_missing:
-                    errors.append(f"record missing required fields in {path.name}: {', '.join(record_missing)}")
-            if kind in ("level1_summary", "level1_warning", "level1_error"):
-                if not LEVEL1_ASSISTANT_CODE.fullmatch(code):
-                    errors.append(f"invalid level1 assistant-scope task code in {path.name}")
-            if kind == "level1_results":
-                if not LEVEL1_PLAN_CODE.fullmatch(code):
-                    errors.append(f"invalid level1 aggregate task code in {path.name}")
+            for artifact in sorted(directory.iterdir()):
+                contained_path(root, artifact.relative_to(root), True)
+                if not artifact.is_dir():
+                    continue
+                for ver in sorted(artifact.iterdir()):
+                    contained_path(root, ver.relative_to(root), True)
+                    if not ver.is_dir():
+                        continue
+                    manifest = ver/'manifest.json'
+                    if not manifest.is_file():
+                        manifest = ver/'manifest.yaml'
+                        if manifest.is_file():
+                            warnings.append('legacy JSON-compatible manifest: ' + manifest.relative_to(root).as_posix())
+                    if not manifest.is_file():
+                        errors.append('missing manifest: ' + ver.relative_to(root).as_posix())
+                        continue
+                    try:
+                        validate_manifest(root, manifest, events)
+                    except (ValueError, OSError, TypeError, KeyError) as exc:
+                        errors.append(f'artifact {manifest.relative_to(root)}: {exc}')
+        except (ValueError, OSError) as exc:
+            errors.append(f'{kind}: {exc}')
+    try:
+        interface_dir = contained_path(root, 'plan/interfaces')
+        if interface_dir.is_dir():
+            participants = {x for e in events if e['record_type'] == 'level1_plan' for x in e['participating_assistants']}
+            for path in sorted(interface_dir.iterdir()):
+                if path.is_file() and path.suffix in ('.json', '.yaml'):
+                    validate_interface(root, path.relative_to(root).as_posix(), participants)
+    except (ValueError, OSError, TypeError, KeyError) as exc:
+        errors.append(f'interface: {exc}')
+    if version == 1:
+        warnings.append('V1 compatibility mode: legacy narrative records are not canonical authorization evidence')
+    return errors, warnings
 
-    root_templates = root / "root" / "templates"
-    if root_templates.is_dir():
-        for path in sorted(root_templates.rglob("*TASK*.md")):
-            missing = text_has_all(path, REQUIRED_TASK_FIELDS)
-            if missing:
-                warnings.append(f"template missing task fields in {path.relative_to(root)}: {', '.join(missing)}")
 
-    workspaces = root / "ai_workspace"
-    if workspaces.is_dir():
-        for path in sorted(workspaces.rglob("TASK_PACKAGE.md")):
-            missing = text_has_all(path, REQUIRED_TASK_FIELDS)
-            if missing:
-                errors.append(f"task package missing fields in {path.relative_to(root)}: {', '.join(missing)}")
-            text = path.read_text(encoding="utf-8", errors="replace")
-            code_line = next((line for line in text.splitlines() if "task_code:" in line), "")
-            candidate = code_line.split("task_code:", 1)[-1].strip().strip("`")
-            if candidate and "<" not in candidate and not TASK_CODE.fullmatch(candidate):
-                errors.append(f"invalid task code in {path.relative_to(root)}")
-            elif candidate and "<" not in candidate and project_identifier and not candidate.startswith(f"{project_identifier}_"):
-                errors.append(f"project identifier mismatch in {path.relative_to(root)}: expected {project_identifier}_")
-
-    for kind in ("common_data", "common_artifacts"):
-        directory = root / kind
-        if not directory.is_dir():
-            continue
-        for manifest in directory.glob("*/*/manifest.yaml"):
-            try:
-                payload = __import__("json").loads(manifest.read_text(encoding="utf-8"))
-                for field in ("artifact_id", "version", "producer_task", "producer_assistant", "content_hash"):
-                    if not payload.get(field):
-                        errors.append(f"artifact manifest missing {field}: {manifest.relative_to(root)}")
-            except Exception as exc:
-                errors.append(f"invalid artifact manifest {manifest.relative_to(root)}: {exc}")
-
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('project_root', type=Path)
+    args = parser.parse_args(argv)
+    errors, warnings = validate_project(args.project_root)
     for message in warnings:
-        print(f"WARNING: {message}")
+        print('WARNING: ' + message)
     for message in errors:
-        print(f"ERROR: {message}")
+        print('ERROR: ' + message)
     print(f"RESULT: {'PASS' if not errors else 'FAIL'} ({len(errors)} errors, {len(warnings)} warnings)")
     return 0 if not errors else 1
 
 
-if __name__ == "__main__":
-    sys.exit(main())
+if __name__ == '__main__':
+    raise SystemExit(main())

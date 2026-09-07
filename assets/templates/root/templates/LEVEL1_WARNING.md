@@ -1,19 +1,23 @@
 # Level-1 recoverable interruption
 
-- record_type: level1_warning
-- task_code: `<project-identifier>_<level1-task>-<assistant>-###-####`
-- task_name:
-- responsible_role: assistant
-- participating_assistant:
-- event_date:
-- status: active-recovery
-- parent_or_related_record:
-- level1_plan_reference:
-- interruption_detected_at:
-- affected_scope:
-- recovery_owner:
-- recovery_plan:
-- resumption_condition:
+This JSON is an event submitted to `root/record_engine.py`. Replace DEMO identities/references and establish real prerequisite records/evidence first; do not write it directly to `work_logs/`. The engine generates IDs, timestamps, sequence, hashes, `record_status`, `execution_status`, and plan freeze metadata. Fold the narrative outline below into `event_description`.
+
+```json
+{
+  "record_type": "level1_warning",
+  "task_code": "DEMO_00-00-###-####",
+  "requested_status": "active",
+  "level1_plan_reference": "work_logs/level1_plan_DEMO_00-##-###-####.md",
+  "recovery_owner": "assistant_00",
+  "recovery_plan": "Apply the approved stage recovery procedure.",
+  "affected_scope": [
+    "DEMO_00-00-000-0000"
+  ],
+  "task_name": "Example task (replace with the real objective)",
+  "responsible_role": "assistant_00",
+  "event_description": "Supply the full factual narrative, verification evidence, limitations and next action; sample text is not approval evidence."
+}
+```
 
 ## Stage-wide interruption and evidence
 

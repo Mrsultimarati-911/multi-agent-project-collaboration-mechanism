@@ -1,0 +1,12 @@
+{
+  "interface_id": "example-interface",
+  "version": 1,
+  "owner_assistant": "assistant_00",
+  "consumers": ["assistant_01"],
+  "contract_status": "proposed",
+  "inputs": [],
+  "outputs": [],
+  "compatibility_constraints": [],
+  "acceptance_criteria": [],
+  "change_authority_reference": "work_logs/level1_plan_EXAMPLE_00-##-###-####.md"
+}

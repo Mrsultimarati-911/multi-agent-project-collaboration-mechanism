@@ -1,35 +1,40 @@
 # Level-2 execution plan
 
-- record_type: level2_plan
-- task_code: `<project-identifier>_<level1-task>-<assistant>-<employee>-<employee-task>`
-- task_name:
-- responsible_role: assistant
-- responsible_assistant:
-- responsible_employee:
-- event_date:
-- status: approved-dispatched
-- plan_status: frozen
-- level1_plan_reference:
-- owner_dispatch_approval_date:
-- owner_dispatch_approval_evidence:
-- employee_model:
-- employee_reasoning:
-- expected_duration:
-- workspace: `ai_workspace/<task-name>/`
-- related_plan:
-- supersedes:
-- frozen_at:
-- frozen_by: human
-- authority_envelope_reference:
-- dispatch_authority: `owner-approved | envelope-authorized`
-- depends_on: []
-- consumes: []
-- produces: []
-- artifact_references: []
-- interface_references: []
-- base_revision:
-- worktree_or_branch:
-- conflict_scope:
+This JSON is an event submitted to `root/record_engine.py`. Replace DEMO identities/references and establish real prerequisite records/evidence first; do not write it directly to `work_logs/`. The engine generates IDs, timestamps, sequence, hashes, `record_status`, `execution_status`, and plan freeze metadata. Fold the narrative outline below into `event_description`.
+
+The example uses `envelope-authorized`. For direct approval use `owner-approved` and an actual `owner_dispatch_approval_evidence` file reference. Bounded rework/replacement needs no repeated approval; envelope breaches and R3 require explicit owner approval.
+
+The engine pins plan/audit references to `.md#event_id`. `required_dependency_status` permits only `accepted`, `integrated` or `closed` (default accepted), never planned/running. Shared publication additionally requires the parent's matching `publish_permissions` or an actual `owner_publication_approval_evidence` in this plan; owner-approved dispatch alone is insufficient.
+
+```json
+{
+  "record_type": "level2_plan",
+  "task_code": "DEMO_00-00-000-0000",
+  "requested_status": "planned",
+  "responsible_assistant": "assistant_00",
+  "responsible_employee": "employee_00",
+  "level1_plan_reference": "work_logs/level1_plan_DEMO_00-##-###-####.md",
+  "dispatch_authority": "envelope-authorized",
+  "authority_envelope_reference": "work_logs/level1_plan_DEMO_00-##-###-####.md",
+  "task_type": "data_processing",
+  "risk_level": "R1",
+  "workspace": "ai_workspace/DEMO_00-00-000-0000",
+  "allowed_reads": [
+    "raw_data"
+  ],
+  "allowed_writes": [
+    "ai_workspace/DEMO_00-00-000-0000"
+  ],
+  "depends_on": [],
+  "required_dependency_status": {},
+  "consumes": [],
+  "produces": [],
+  "interface_references": [],
+  "task_name": "Example task (replace with the real objective)",
+  "responsible_role": "assistant_00",
+  "event_description": "Supply the full factual narrative, verification evidence, limitations and next action; sample text is not approval evidence."
+}
+```
 
 ## 1. Authorized task
 
@@ -65,6 +70,8 @@
 - assistant audit criteria:
 - correction / rework criteria:
 - project_demo admission conditions:
+- owner_publication_approval_evidence (optional, required only when publishing without matching stage publish permission):
+- integration_target and envelope permission / owner_integration_approval_evidence (when integration is planned):
 - conclusions that must not be extrapolated:
 
 ## 5. Delivery and record route
@@ -80,15 +87,16 @@
 - recoverable warning conditions:
 - owner-intervention / level2_error conditions:
 - owner_intervention_required: false
-- notification_status: not-required
 - long-task estimate and check cadence:
 
 ## 7. Frozen baseline
 
-This baseline must not be silently edited. A material owner-approved change for the same task identity is appended below by `record`; a changed objective or deliverable requires a new task code and new level-2 plan.
+This baseline is immutable. Append bounded corrections using existing envelope authority; explicit owner approval is required only beyond that authority or for R3/material Level 1 changes. A different task objective/deliverable gets a new code and plan, which may still be envelope-authorized. Record submits changes through the engine rather than editing an earlier JSON block.
 
-## Dispatch amendment ledger (record append-only)
+Frozen scope/dependency/authority changes also need a new task identity and `supersedes_reference`. The reference links history only; old task cancellation is a separate legal state transition.
 
-| Date | Reason | Owner approval evidence | Impact | Decision / replacement records | Recorded by |
+## Replacement evidence outline (submit as narrative, never edit the frozen plan)
+
+| Date | Reason | Approval or Envelope reference | Impact | Decision / replacement records | Recorded by |
 |---|---|---|---|---|---|
 | | | | | | record |

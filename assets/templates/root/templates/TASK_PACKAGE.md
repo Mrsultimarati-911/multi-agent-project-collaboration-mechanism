@@ -2,7 +2,9 @@
 
 - task_code: `<project-identifier>_<level1-task>-<assistant>-<employee>-<employee-task>`
 - task_name:
-- dispatch_status: `owner-approved | envelope-authorized`
+- dispatch_authority: `owner-approved | envelope-authorized`
+- owner_dispatch_approval_evidence: only for owner-approved
+- authority_envelope_reference: matching owner-approved Level 1 for envelope-authorized
 - level1_plan_reference:
 - level2_plan_reference:
 - responsible_employee:
@@ -10,8 +12,12 @@
 - employee_reasoning: `owner-specified, or high`
 - expected_duration:
 - depends_on: []
+- required_dependency_status: {} (only accepted / integrated / closed; default accepted)
 - consumes: []
 - produces: []
+- interface_references: []
+- task_type:
+- risk_level: R0 / R1 / R2 / R3
 - base_revision:
 - worktree_or_branch:
 - conflict_scope:
@@ -26,6 +32,10 @@
 - allowed_writes: `ai_workspace/<task-name>/`
 
 ## Non-goals and prohibitions
+
+Preserve the Level 1 objective/material deliverable, task types, concurrency and read/write scope. Shared inputs name artifact_id plus exact version, never latest. Bounded retry/correction, test rework and task-local refactoring use existing authority; envelope breaches and all R3 actions require explicit owner approval.
+
+Publication uses the parent's matching publish permission or explicit `owner_publication_approval_evidence` in the Level 2 plan, independently of dispatch approval. Submit the complete delivery before audit; the engine binds acceptance to that submitted attempt, path and hash. Integration requires a declared `integration_target` and its specific authority while preserving assistant/coordinator path ownership.
 
 ## Confirmed decisions and fixed assumptions
 

@@ -1,14 +1,13 @@
 {
   "record_type": "level2_error",
-  "task_code": "<project>_00-00-000-0000",
-  "task_name": "",
+  "task_code": "DEMO_00-00-000-0000",
+  "task_name": "待负责人提供权限",
   "responsible_role": "assistant_00",
-  "status": "paused",
-  "previous_status": "running",
-  "event_description": "",
-  "depends_on": [],
-  "artifact_references": [],
+  "requested_status": "paused",
+  "expected_previous_status": "running",
+  "event_description": "按实际情况填写阻塞、已尝试措施和恢复条件；本示例不是实际事件。",
+  "level2_plan_reference": "work_logs/level2_plan_DEMO_00-00-000-0000.md",
+  "direct_error_evidence": "ai_workspace/DEMO_00-00-000-0000/error.txt",
   "owner_intervention_required": true,
-  "notification_status": "pending",
-  "record_reference": ""
+  "paused_scope": ["DEMO_00-00-000-0000"]
 }
