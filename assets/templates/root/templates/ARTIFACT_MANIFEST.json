@@ -1,0 +1,22 @@
+{
+  "artifact_id": "dataset",
+  "name": "dataset.csv",
+  "artifact_type": "common_data",
+  "version": "v0001",
+  "status": "published",
+  "producer_task": "PROJECT_00-00-000-0000",
+  "producer_employee": "employee_00",
+  "producer_assistant": "assistant_00",
+  "assistant_audit_reference": "work_logs/level2_results_mid_PROJECT_00-00-000-0000.md#audit-event-id",
+  "created_at": "2026-01-01T00:00:00+00:00",
+  "source_path": "ai_workspace/PROJECT_00-00-000-0000/dataset.csv",
+  "sources": [],
+  "content_hash": {
+    "algorithm": "sha256",
+    "mode": "file",
+    "value": "generated-by-publish_artifact.py"
+  },
+  "schema_or_interface": null,
+  "replaces": null,
+  "notes": "本文件仅为结构示例；正式 manifest.json 由发布器生成。"
+}
